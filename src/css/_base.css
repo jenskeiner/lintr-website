@@ -1,0 +1,37 @@
+:root {
+  color-scheme: light dark;
+}
+
+body {
+  @apply bg-light-primary text-base text-primary-500 font-sans antialiased;
+}
+
+code {
+  font-variant-ligatures: none;
+}
+
+strong {
+  @apply font-semibold;
+}
+
+html.dark body {
+  @apply bg-dark-secondary text-dark-primary;
+}
+
+html.dark strong {
+  @apply font-semibold;
+}
+
+/* Vercel */
+.vercel-footer-link {
+  @apply text-black ml-1 opacity-100;
+}
+
+.vercel-footer-link svg {
+  height: 1rem;
+  width: 4.438rem;
+}
+
+html.dark .vercel-footer-link {
+  @apply text-secondary-200;
+}

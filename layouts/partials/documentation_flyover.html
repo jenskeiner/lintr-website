@@ -1,0 +1,142 @@
+{{ $currentPage := index $ "ctx" }}
+{{ $project := index $ "project" }}
+{{ $projectCtx := index $currentPage.Site.Params $project }}
+{{ $docsDirDefault := (printf "docs/%s/" $project) }}
+{{ $docsDir := $docsDirDefault }}
+{{ $docsUrlPath := (printf "/docs/%s" $project) }}
+{{ $menu := index $currentPage.Site.Menus (print "docs_" $project) }}
+{{ if eq $currentPage.Type "docs" }}
+  {{ $docsDir = $currentPage.File.Dir }}
+{{ end }}
+{{ $currentPageProject := (index (index (findRESubmatch `docs/(\w+)/.*` $currentPage.Page.File.Dir) 0) 1) }}
+<li
+  class="relative flex items-center h-full"
+  data-controller="flyover"
+  data-flyover-target="button"
+  data-action="mouseenter->flyover#open mouseleave->flyover#close"
+>
+  <a
+    href="{{ $docsUrlPath | relURL }}"
+    class="self-center text-sm font-medium uppercase transition duration-300 opacity-100 hover:opacity-100 {{- if eq $project $currentPageProject }}
+      text-green-500 dark:text-green-300
+    {{ end }}"
+  >
+    Documentation
+  </a>
+  <svg
+    class="ml-2 h-5 w-5 opacity-60 group-hover:opacity-100 transition ease-in-out duration-150"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 20 20"
+    fill="currentColor"
+    aria-hidden="true"
+  >
+    <path
+      fill-rule="evenodd"
+      d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+      clip-rule="evenodd"
+    />
+  </svg>
+  <div
+    class="hidden absolute z-10 top-0 left-1/2 transform -translate-x-1/2 mt-8 pt-2 px-2 w-screen max-w-md sm:px-0 lg:max-w-3xl"
+    data-flyover-target="menu"
+    data-transition-enter-active="duration-200 ease-out"
+    data-transition-enter-from="opacity-0 scale-95"
+    data-transition-enter-to="opacity-100 scale-100"
+    data-transition-leave-active="duration-100 ease-in"
+    data-transition-leave-from="opacity-100 scale-100"
+    data-transition-leave-to="opacity-0 scale-95"
+  >
+    <div
+      class="rounded-lg shadow-clean-lg ring-1 ring-secondary-200 ring-opacity-50 overflow-hidden dark:ring-1 dark:ring-dark-primary dark:shadow-clean-dark-lg"
+    >
+      <div
+        class="relative grid auto-cols-fr gap-6 bg-light-primary px-5 py-6 sm:gap-8 sm:p-8 lg:grid-cols-3 dark:bg-dark-secondary"
+      >
+        {{ range sort $menu "Weight" }}
+          {{ $docsDirToRender := $docsDir }}
+          {{ if (ne $project $currentPageProject) }}
+            {{ $docsDirToRender = $docsDirDefault }}
+          {{ end }}
+          {{ if or (eq $docsDirToRender .Page.File.Dir) (eq $docsDirToRender .Page.Parent.File.Dir)}}
+            <a
+              href="{{ .Page.RelPermalink }}"
+              class="-m-3 p-3 flex items-start rounded-lg whitespace-nowrap hover:bg-light-note transition ease-in-out duration-150 dark:hover:bg-dark-note-darker"
+            >
+              <div class="max-w-full">
+                <p class="text-base font-medium">
+                  {{ index (split .Name "|") 0 -}}
+                </p>
+                <p
+                  class="mt-1 text-sm overflow-hidden overflow-ellipsis opacity-60"
+                >
+                  {{- safeHTML (strings.TrimPrefix (index (split .Name "|") 0) (index (split .Page.Summary ". ") 0)) -}}.
+                </p>
+              </div>
+            </a>
+          {{ end }}
+        {{ end }}
+      </div>
+      <div class="p-5 bg-light-note sm:p-8 dark:bg-dark-note-darker">
+        <div class="relative grid gap-6 sm:gap-8 lg:grid-cols-2">
+          {{ $latestVersion := $projectCtx.documentation.developmentVersion -}}
+          {{ $latestVersionPath := index $projectCtx.documentation.versions $latestVersion -}}
+          {{ $stableVersion := $projectCtx.documentation.stableVersion -}}
+          {{ $stableVersionPath := index $projectCtx.documentation.versions $stableVersion -}}
+          {{ $defaultVersion := $projectCtx.documentation.defaultVersion -}}
+          <a
+            {{- if eq $stableVersion $defaultVersion }}
+              href="{{ $docsUrlPath | relURL }}"
+            {{- else }}
+              href="{{ printf "%s/%s/" $docsUrlPath $stableVersionPath | relURL }}"
+            {{- end }}
+            class="-m-3 p-3 flow-root rounded-md hover:bg-light-primary transition ease-in-out duration-150 dark:hover:bg-dark-secondary"
+          >
+            <span class="flex items-center">
+              <span class="text-base font-medium">
+                {{ $stableVersion }}
+              </span>
+              <span
+                class="ml-3 inline-flex items-center px-3 py-0.5 rounded-full text-xs font-medium leading-5 border border-green-500 bg-transparent text-green-500 dark:border dark:text-green-300 dark:border-green-300"
+              >
+                Stable
+              </span>
+            </span>
+            <span class="mt-1 block text-sm opacity-100">
+              Documentation for the latest,
+              <strong
+                class="font-medium text-green-500 dark:font-medium dark:text-green-300"
+                >stable</strong
+              >, branch.
+            </span>
+          </a>
+          <a
+            {{- if eq $latestVersion $defaultVersion }}
+              href="{{ $docsUrlPath | relURL }}"
+            {{- else }}
+              href="{{ printf "%s/%s/" $docsUrlPath $latestVersionPath | relURL }}"
+            {{- end }}
+            class="-m-3 p-3 flow-root rounded-md hover:bg-light-primary transition ease-in-out duration-150 dark:hover:bg-dark-secondary"
+          >
+            <span class="flex items-center">
+              <span class="text-base font-medium">
+                {{ $latestVersion }}
+              </span>
+              <span
+                class="ml-3 inline-flex items-center px-3 py-0.5 rounded-full text-xs font-medium leading-5 border border-orange-500 bg-transparent text-orange-500 dark:border dark:text-orange-300 dark:border-orange-300"
+              >
+                Development
+              </span>
+            </span>
+            <span class="mt-1 block text-sm opacity-100">
+              Documentation for the latest,
+              <strong
+                class="font-medium text-orange-500 dark:font-medium dark:text-orange-300"
+                >in-development</strong
+              >, branch.
+            </span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</li>

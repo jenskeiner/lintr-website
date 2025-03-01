@@ -1,0 +1,120 @@
+import "./css/app.css"
+
+import algoliasearch from "algoliasearch/dist/algoliasearch.esm.browser"
+import { autocomplete, getAlgoliaResults } from "@algolia/autocomplete-js"
+import { Application } from "@hotwired/stimulus"
+import { TransitionController, ClickOutsideController } from "stimulus-use"
+import MenuController from "./js/controllers/menu_controller"
+import SelectController from "./js/controllers/select_controller"
+import ModeSwitchController from "./js/controllers/mode_switch_controller"
+import FlyoverController from "./js/controllers/flyover_controller"
+import TabsController from "./js/controllers/tabs_controller"
+import ClipboardController from "./js/controllers/clipboard_controller"
+import CollapsibleController from "./js/controllers/collapsible_controller"
+import AutocolumnsController from "./js/controllers/autocolumns_controller"
+
+const application = Application.start()
+application.register("clipboard", ClipboardController)
+application.register("transition", TransitionController)
+application.register("click-outside", ClickOutsideController)
+application.register("menu", MenuController)
+application.register("select", SelectController)
+application.register("mode-switch", ModeSwitchController)
+application.register("flyover", FlyoverController)
+application.register("tabs", TabsController)
+application.register("collapsible", CollapsibleController)
+application.register("autocolumns", AutocolumnsController)
+
+// Search
+const searchClient = algoliasearch(
+  "SIHVOPCWNI",
+  "ed995fb51a9bb73b4d9da7857ea3a368",
+)
+
+const searchContainer = Array.from(
+  document.getElementsByClassName("search-container"),
+).filter((element) => {
+  return window.getComputedStyle(element).getPropertyValue("display") !== "none"
+})[0]
+
+if (searchContainer) {
+  autocomplete({
+    container: searchContainer,
+    placeholder: "Search",
+    getSources({ query }) {
+      if (query.length < 3) {
+        return []
+      }
+
+      return [
+        {
+          sourceId: "docs",
+          getItems() {
+            return getAlgoliaResults({
+              searchClient,
+              queries: [
+                {
+                  indexName: "docs",
+                  query,
+                  filters: `version:${searchContainer.dataset.version}`,
+                  params: {
+                    hitsPerPage: 5,
+                    highlightPreTag: '<em class="highlight">',
+                    highlightPostTag: "</em>",
+                  },
+                },
+              ],
+            })
+          },
+          templates: {
+            item({ item, createElement }) {
+              let snippetTitle = item._snippetResult.title
+              let snippetContent = item._snippetResult.content
+
+              if (snippetTitle) {
+                snippetTitle = snippetTitle.value
+              } else {
+                snippetTitle = item.title
+              }
+
+              if (snippetContent) {
+                snippetContent = snippetContent.value
+              } else {
+                snippetContent = item.content
+              }
+
+              return createElement("div", {
+                dangerouslySetInnerHTML: {
+                  __html: `<div class="search-result">
+                      <a href="${item.relpermalink}" title="${snippetTitle}">
+                          <div>
+                            <h4>${snippetTitle}</h4>
+                            <p class="snippet">${snippetContent}</p>
+                          </div>
+                      </a>
+                      </div>`,
+                },
+              })
+            },
+            footer({ createElement }) {
+              return createElement("div", {
+                dangerouslySetInnerHTML: {
+                  __html:
+                    '<div class="flex items-center justify-end w-full">' +
+                    "<span>" +
+                    "Search by " +
+                    '<a href="https://www.algolia.com" title="Algolia">' +
+                    '<img class="h-6 inline-block logo-light" src="/images/Algolia-logo-blue.svg" alt="Algolia logo" />' +
+                    '<img class="hidden h-6 logo-dark" src="/images/Algolia-logo-white.svg" alt="Algolia logo" />' +
+                    "</a>" +
+                    "</span>" +
+                    "</div>",
+                },
+              })
+            },
+          },
+        },
+      ]
+    },
+  })
+}

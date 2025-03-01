@@ -1,0 +1,315 @@
+.highlight pre {
+  @apply px-8 py-7 overflow-auto rounded-lg font-mono leading-6 bg-dark-code;
+}
+
+.highlight pre code {
+  @apply w-full text-code-600 inline-block !important;
+}
+
+.highlight pre code::selection,
+.highlight pre code span::selection {
+  @apply bg-blue-200;
+}
+
+/* Line number */
+.highlight pre code .lnt {
+  color: #4474cc70;
+}
+
+/* Highlight */
+.highlight pre code .hl {
+  @apply relative bg-blue-100 -ml-8 -mr-8 pl-8 w-full block;
+}
+.highlight pre code .hl:before {
+  @apply absolute w-1.5 h-1.5 left-3 bg-blue-400 rounded-full;
+  top: 0.625rem;
+  content: " ";
+}
+
+/* Builtin (Pseudo */
+
+.highlight pre code .bp {
+  color: #3b82f6;
+}
+
+/* Comment */
+
+.highlight pre code .c {
+  color: #4474cc70;
+}
+
+/* Comment (Single) */
+
+.highlight pre code .c1 {
+  color: #4474cc70;
+}
+
+/* Error */
+
+.highlight pre code .err {
+  color: #c2cafd;
+}
+
+/* Generic */
+
+.highlight pre code .g {
+  color: #93a1a1;
+}
+
+/* Keyword */
+
+.highlight pre code .k {
+  color: #a855f7;
+}
+
+/* Keyword (Constant) */
+
+.highlight pre code .kc {
+  color: #0ea5e9;
+}
+
+/* Keyword (Namespace) */
+
+.highlight pre code .kn {
+  color: #a855f7;
+}
+
+/* Literal */
+
+.highlight pre code .l {
+  color: #34d399;
+}
+
+/* Number */
+
+.highlight pre code .m {
+  color: #14b8a6;
+}
+
+/* Name */
+
+.highlight pre code .n {
+  color: inherit;
+}
+
+/* Name (Attribute) */
+
+.highlight pre code .na {
+  color: #6366f1;
+}
+
+/* Name (Builtin) */
+
+.highlight pre code .nb {
+  color: #06b6d4;
+}
+
+/* Name (Class) */
+
+.highlight pre code .nc {
+  color: #3b82f6;
+}
+
+/* Name (Function) */
+
+.highlight pre code .nf {
+  color: #6366f1;
+}
+
+/* Name (Other) */
+
+.highlight pre code .nx {
+  color: #6366f1;
+}
+
+/* Name (Variable) */
+
+.highlight pre code .nv {
+  color: #3b82f6;
+}
+
+/* Operator */
+
+.highlight pre code .o {
+  color: #4474cc80;
+}
+
+/* Punctuation */
+
+.highlight pre code .p {
+  color: #4474cc80;
+}
+
+/* String (Literal) */
+
+.highlight pre code .s {
+  color: #f97316;
+}
+
+/* String (Single) */
+
+.highlight pre code .s1 {
+  color: #f97316;
+}
+
+/* String (Double) */
+
+.highlight pre code .s2 {
+  color: #f97316;
+}
+
+html.dark .highlight pre {
+  @apply bg-dark-code;
+}
+
+.highlight pre code,
+.browser-window.dark .highlight pre code {
+  @apply bg-transparent text-dark-primary !important;
+}
+
+html.dark .highlight pre code::selection,
+.highlight pre code span::selection {
+  @apply bg-gray-600;
+}
+
+/* Line number */
+.highlight pre code .lnt {
+  color: #777ea580;
+}
+
+/* Highlight */
+.highlight pre code .hl {
+  @apply bg-blue-900;
+}
+
+/* Builtin (Pseudo */
+
+.highlight pre code .bp {
+  color: #60a5fa;
+}
+
+/* Comment */
+
+.highlight pre code .c {
+  color: #777ea5;
+}
+
+/* Comment (Single) */
+
+.highlight pre code .c1 {
+  color: #777ea5;
+}
+
+/* Error */
+
+.highlight pre code .err {
+  color: #c2cafd;
+}
+
+/* Generic */
+
+.highlight pre code .g {
+  color: #93a1a1;
+}
+
+/* Keyword */
+
+.highlight pre code .k {
+  color: #a5b4fc;
+}
+
+/* Keyword (Constant) */
+
+.highlight pre code .kc {
+  color: #7dd3fc;
+}
+
+/* Keyword (Namespace) */
+
+.highlight pre code .kn {
+  color: #a5b4fc;
+}
+
+/* Literal */
+
+.highlight pre code .l {
+  color: #5eead4;
+}
+
+/* Number */
+
+.highlight pre code .m {
+  color: #6ee7b7;
+}
+
+/* Name */
+
+.highlight pre code .n {
+  color: inherit;
+}
+
+/* Name (Attribute) */
+
+.highlight pre code .na {
+  color: #a7acfc;
+}
+
+/* Name (Builtin) */
+
+.highlight pre code .nb {
+  color: #f0abfc;
+}
+
+/* Name (Class) */
+
+.highlight pre code .nc {
+  color: #60a5fa;
+}
+
+/* Name (Function) */
+
+.highlight pre code .nf {
+  color: #a78bfa;
+}
+
+/* Name (Other) */
+
+.highlight pre code .nx {
+  color: #a5b4fc;
+}
+
+/* Name (Variable) */
+
+.highlight pre code .nv {
+  color: #7ab9f8;
+}
+
+/* Operator */
+
+.highlight pre code .o {
+  color: #727aad;
+}
+
+/* Punctuation */
+
+.highlight pre code .p {
+  color: #727aad;
+}
+
+/* String (Literal) */
+
+.highlight pre code .s {
+  color: #fdba74;
+}
+
+/* String (Single) */
+
+.highlight pre code .s1 {
+  color: #fdba74;
+}
+
+/* String (Double) */
+
+.highlight pre code .s2 {
+  color: #fdba74;
+}

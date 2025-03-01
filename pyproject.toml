@@ -1,0 +1,89 @@
+[project]
+name = "lintr-website"
+version = "0.1.0"
+description = ""
+authors = [
+    { name = "Jens Keiner", email = "jens.keiner@gmail.com" }
+]
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+dependencies = [
+    "cleo>=1.0.0a5",
+    "PyYAML>=6.0",
+    "tomli>=2.0",
+    "httpx>=0.23",
+    "tomli-w>=1.0",
+]
+
+[dependency-groups]
+dev = [
+    "pre-commit>=3.6.0",
+]
+
+#[build-system]
+#requires = ["hatchling>=1.21.1"]
+#build-backend = "hatchling.build"
+
+[tool.ruff]
+fix = true
+unfixable = [
+    "ERA", # do not autoremove commented out code
+]
+target-version = "py312"
+line-length = 88
+extend-select = [
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "ERA", # flake8-eradicate/eradicate
+    "I",   # isort
+    "N",   # pep8-naming
+    "PIE", # flake8-pie
+    "PGH", # pygrep
+    "RUF", # ruff checks
+    "SIM", # flake8-simplify
+    "TCH", # flake8-type-checking
+    "TID", # flake8-tidy-imports
+    "UP",  # pyupgrade
+]
+
+[tool.ruff.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+[tool.ruff.isort]
+force-single-line = true
+lines-between-types = 1
+lines-after-imports = 2
+required-imports = ["from __future__ import annotations"]
+
+[tool.black]
+target-version = ["py310"]
+preview = true
+
+[tool.website.config]
+baseURL = "https://lintr.org/"
+languageCode = "en-us"
+title = "Lintr - A powerful and flexible GitHub repository settings linter"
+
+ignoreFiles = ["^assets/src"]
+pygmentsUseClasses = true
+
+[tool.website.config.permalinks]
+categories = "/blog/category/:title/"
+tags = "/blog/tag/:title/"
+
+[tool.website.config.params]
+description = "A powerful and flexible GitHub repository settings linter"
+
+[tool.website.config.params.lintr.documentation]
+defaultVersion = "main"
+
+[tool.website.config.markup.goldmark.renderer]
+unsafe = true
+
+[tool.website.config.minify.tdewolff.html]
+keepWhitespace = true
+
+[tool.website.lintr.versions]
+"0.2.0" = "0.2.0"
+#"0.6.0" = "0.6.0"

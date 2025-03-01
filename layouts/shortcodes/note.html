@@ -1,0 +1,17 @@
+{{- if eq  (.Get "collapsible" | default "false") "true" -}}
+  <div class="admonition note collapsible" data-controller="collapsible">
+    <div class="title flex items-start">
+      <h5 class="flex-grow">{{ .Get "title" | default "Note" }}</h5>
+    </div>
+    <div class="content hidden">
+      {{ printf "%s" .Inner | markdownify }}
+    </div>
+  </div>
+{{- else -}}
+  <div class="admonition note">
+    {{- if .Get "title" -}}
+      <div class="title">{{ .Get "title" | default "Note" }}</div>
+    {{- end -}}
+    <div class="content">{{ printf "%s" .Inner | markdownify }}</div>
+  </div>
+{{- end -}}
