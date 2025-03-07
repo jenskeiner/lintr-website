@@ -62,7 +62,7 @@ jobs:
       - name: Fetch Documentation
         run: |
           uv sync
-          uv run bin/website build
+          uv run bin/website.py build
 
       - name: Start Deployment
         uses: bobheadxi/deployments@v1
