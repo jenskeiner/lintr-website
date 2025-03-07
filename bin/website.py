@@ -109,7 +109,7 @@ class LintrProject(Project):
 
     @property
     def valid_branches(self) -> Iterable[str]:
-        return {"main"}
+        return ["develop", "main"]
 
 
 _projects = (LintrProject(),)
@@ -254,23 +254,18 @@ class DocsPullCommand(ConfigureCommand):
                 )
                 continue
 
-            for version, name in versions.items():
-                is_default = default_version == name
-                self._pull_version(
-                    repo=p.repo_url,
-                    version=version,
-                    dest=destination,
-                    name=name,
-                    is_default=is_default,
-                )
+            items: dict = dict(**branches, **versions)
+            items: list = list(items.items())
+            items.sort(key=lambda x: x[0] != default_version)
 
-            for branch, name in branches.items():
-                is_default = default_version == branch
+            for x in items:
+                k, v = x
+                is_default = default_version == k
                 self._pull_version(
                     repo=p.repo_url,
-                    version=branch,
+                    version=k,
                     dest=destination,
-                    name=name,
+                    name=v,
                     is_default=is_default,
                 )
 
@@ -290,8 +285,11 @@ class DocsPullCommand(ConfigureCommand):
             dest.symlink_to(src, target_is_directory=True)
         else:
             # Copy files at the root of the destination
-            for filepath in src.glob("*.md"):
-                shutil.copyfile(filepath, dest.joinpath(filepath.name))
+            for filepath in src.glob("**/*.md"):
+                postfix = filepath.relative_to(src)
+                target = dest / postfix
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(filepath, dest / postfix)
 
     def _pull_version(
         self,
@@ -338,20 +336,30 @@ class DocsPullCommand(ConfigureCommand):
                     self._pull_local_version(tmp_dir, dest)
                 else:
                     path.mkdir()
+                    docs_dir = tmp_dir / "docs"
 
-                    for filepath in Path(tmp_dir).joinpath("docs").glob("**/*.md"):
-                        with filepath.open() as f:
-                            content = f.read()
+                    for filepath in docs_dir.glob("**/*.md"):
+                        postfix = filepath.relative_to(docs_dir)
+                        target_path = path / postfix
+                        target_path.parent.mkdir(parents=True, exist_ok=True)
+
+                        if filepath.suffix == ".md":
+                            with filepath.open() as f:
+                                content = f.read()
+
                             # Load front matter data
                             _, frontmatter, content = content.split("---", maxsplit=2)
                             frontmatter = yaml.safe_load(frontmatter)
                             frontmatter["title"] += f" | {version}"
+                            menu_name = list(frontmatter["menu"].keys()).pop()
+                            menu_name0 = f"{menu_name}_{version}"
+                            frontmatter["menu"] = {menu_name0: frontmatter["menu"][menu_name]}
                             new_frontmatter = yaml.dump(frontmatter).strip()
-
-                        new_content = f"---\n{new_frontmatter}\n---\n{content}"
-
-                        with path.joinpath(filepath.name).open("w") as f:
-                            f.write(new_content)
+                            new_content = f"---\n{new_frontmatter}\n---\n{content}"
+                            with target_path.open("w") as f:
+                                f.write(new_content)
+                        else:
+                            shutil.copyfile(filepath, target_path)
         finally:
             os.chdir(cwd.as_posix())
 
