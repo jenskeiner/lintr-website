@@ -50,20 +50,16 @@ jobs:
           enable-cache: true
       - name: Set up Python ${{ env.PYTHON_VERSION }}
         run: uv python install ${{ env.PYTHON_VERSION }}
-
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: "18"
-
       - name: Build Assets
         run: npm ci && npm run prod
-
       - name: Fetch Documentation
         run: |
           uv sync
           uv run bin/website.py build
-
       - name: Start Deployment
         uses: bobheadxi/deployments@v1
         id: deployment
@@ -71,16 +67,13 @@ jobs:
           step: start
           token: ${{ secrets.GITHUB_TOKEN }}
           env: Preview
-
       - name: Install Hugo
         uses: peaceiris/actions-hugo@v2
         with:
-          hugo-version: "0.121.1"
+          hugo-version: "0.145.0"
           extended: true
-
       - name: Build
         run: hugo --buildDrafts --buildFuture -v
-
       - name: Deploy
         uses: amondnet/vercel-action@v25
         id: vercel-action
@@ -91,7 +84,6 @@ jobs:
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           github-comment: true
           working-directory: public
-
       - name: Update Deployment Status
         uses: bobheadxi/deployments@v1
         if: always()
