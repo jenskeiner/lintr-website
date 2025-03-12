@@ -73,7 +73,7 @@ jobs:
           hugo-version: "0.145.0"
           extended: true
       - name: Build
-        run: hugo --buildDrafts --buildFuture -v
+        run: hugo build --buildDrafts --buildFuture
       - name: Deploy
         uses: amondnet/vercel-action@v25
         id: vercel-action
