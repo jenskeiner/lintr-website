@@ -4,7 +4,7 @@
   {{ if .Title }}
     {{ if eq .Page.Type "docs" }}
       <title>
-        {{ delimit (slice .Title "Documentation" .Site.Title) " | " }}
+        {{ delimit (slice .Params._project .Title .Params._version) " | " }}
       </title>
     {{ else if (or (eq .Page.Type "blog") (eq .Page.Type "categories") (eq .Page.Type "tags")) }}
       <title>{{ delimit (slice .Title "Blog" .Site.Title) " | " }}</title>

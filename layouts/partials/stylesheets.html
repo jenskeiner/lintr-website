@@ -1,12 +1,11 @@
-{{ $style := resources.Get "assets/app.css" }}
-
-{{ if .Site.IsServer }}
+{{- $style := resources.Get "assets/app.css" -}}
+{{- if hugo.IsServer -}}
   <link rel="stylesheet" href="{{ $style.RelPermalink }}" />
-{{ else }}
-  {{ $style := $style | fingerprint }}
+{{- else -}}
+  {{- $style := $style | fingerprint -}}
   <link
     rel="stylesheet"
     href="{{ $style.RelPermalink }}"
     integrity="{{ $style.Data.Integrity }}"
   />
-{{ end }}
+{{- end -}}
