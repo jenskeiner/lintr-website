@@ -6,6 +6,9 @@ markup:
   goldmark:
     renderer:
       unsafe: true
+    renderHooks:
+      link:
+        enableDefault = true
 minify:
   tdewolff:
     html:
