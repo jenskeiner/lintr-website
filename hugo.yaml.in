@@ -8,7 +8,7 @@ markup:
       unsafe: true
     renderHooks:
       link:
-        enableDefault = true
+        enableDefault: true
 minify:
   tdewolff:
     html:
