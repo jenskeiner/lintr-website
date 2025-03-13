@@ -3,10 +3,8 @@
 # requires-python = ">=3.12"
 # dependencies = [
 #   "cleo>=1.0.0a5",
-#   "PyYAML>=6.0",
-#   "tomli>=2.0",
 #   "httpx>=0.23",
-#   "tomli-w>=1.0",
+#   "PyYAML>=6.0.2",
 # ]
 # ///
 from __future__ import annotations
@@ -25,8 +23,6 @@ from typing import TYPE_CHECKING
 from typing import Any
 
 import httpx
-import tomli
-import tomli_w
 import yaml
 
 from cleo.application import Application
@@ -56,6 +52,11 @@ class Project(abc.ABC):
     @abc.abstractmethod
     def name(self) -> str:
         pass
+
+    @property
+    @abc.abstractmethod
+    def description(self) -> str:
+        return self.name
 
     @property
     def display_name(self) -> str:
@@ -89,6 +90,10 @@ class Project(abc.ABC):
     def development_branch(self) -> str:
         return next(iter(self.valid_branches))
 
+    @property
+    def versions(self) -> list[str]:
+        return []
+
 
 class LintrProject(Project):
     @property
@@ -100,6 +105,10 @@ class LintrProject(Project):
         return "lintr"
 
     @property
+    def description(self) -> str:
+        return "A powerful and flexible GitHub repository settings linter."
+
+    @property
     def display_name(self) -> str:
         return "Lintr"
 
@@ -109,7 +118,11 @@ class LintrProject(Project):
 
     @property
     def valid_branches(self) -> Iterable[str]:
-        return ["develop", "main"]
+        return ["develop"]
+
+    @property
+    def versions(self) -> list[str]:
+        return []
 
 
 _projects = (LintrProject(),)
@@ -142,8 +155,9 @@ def get_branches(project: Project) -> dict[str, str]:
 
 
 class ConfigureCommand(Command):
+    DESTINATION: Path = Path(__file__).parent.parent / "content"
     name = "configure"
-    description = "Generate website config.toml file."
+    description = "Generate website hugo.yaml file."
     options: ClassVar[list[Option]] = list(
         itertools.chain.from_iterable(
             [
@@ -166,54 +180,83 @@ class ConfigureCommand(Command):
     )
 
     @staticmethod
-    def get_configuration(file: Path | None = None) -> dict[str, Any]:
-        if file is None:
-            file = Path(__file__).parent.parent / "pyproject.toml"
+    def get_configuration_template(file: Path = Path(__file__).parent.parent / "hugo.yaml.in") -> dict[str, Any]:
+        with open(file) as f:
+            return yaml.full_load(f)
 
-        return tomli.loads(file.read_text())["tool"]["website"]
+    @staticmethod
+    def get_configuration(file: Path = Path(__file__).parent.parent / "hugo.yaml") -> dict[str, Any]:
+        with open(file) as f:
+            return yaml.full_load(f)
 
     def render(self, file: Path | None = None) -> None:
         if file is None:
-            file = Path(__file__).parent.parent / "config.toml"
+            file = Path(__file__).parent.parent / "hugo.yaml"
 
-        content = self.get_configuration()
-        config = content["config"]
+        content = self.get_configuration_template()
+        config = content
+        params = config.get("params", {})
+
+        mounts = []
 
         for p in _projects:
-            config["params"][p.name]["name"] = p.display_name
-            config["params"][p.name]["name_short"] = p.display_name_short
-            config["params"][p.name]["repo_url"] = p.repo_url_without_extension
-            config["params"][p.name]["documentation"]["path"] = p.path
+            project_params = {
+                "name": p.display_name,
+                "description": p.description,
+                "name_short": p.display_name_short,
+                "repo_url": p.repo_url_without_extension,
+            }
             if self.option(f"local-{p.name}"):
-                version: str = "development"
-                config["params"][p.name]["documentation"]["defaultVersion"] = version
-                config["params"][p.name]["documentation"]["versions"] = {
-                    version: version
+                version: str = "local"
+                project_params["documentation"] = {
+                    "defaultVersion": version,
+                    "stableVersion": version,
+                    "developmentVersion": version,
+                    "versions": {version: version},
+                    "path": p.path
                 }
-                config["params"][p.name]["documentation"]["stableVersion"] = version
-                config["params"][p.name]["documentation"][
-                    "developmentVersion"
-                ] = version
+                if self.option(f"editable-{p.name}"):
+                    mounts.append(
+                        {
+                            "source": str(Path(self.option(f"local-{p.name}")) / "docs"),
+                            "target": str((self.DESTINATION / p.path / version).relative_to(self.DESTINATION.parent))
+                        }
+                    )
             else:
-                versions = content[p.name]["versions"]
+                versions = {v: v for v in p.versions}
                 branches = get_branches(p)
-                config["params"][p.name]["documentation"]["versions"] = {
-                    **branches,
-                    **versions,
+                stable_version = next(iter([*versions.keys(), *branches]))
+                project_params["documentation"] = {
+                    "defaultVersion": stable_version,
+                    "stableVersion": stable_version,
+                    "developmentVersion": p.development_branch,
+                    "versions": {
+                        **branches,
+                        **versions,
+                    },
+                    "path": p.path
                 }
-                config["params"][p.name]["documentation"]["stableVersion"] = next(
-                    iter(versions.keys())
-                )
-                config["params"][p.name]["documentation"][
-                    "developmentVersion"
-                ] = p.development_branch
+            
+            params[p.name] = project_params
 
-        config["params"]["projects"] = [p.name for p in _projects]
+        params["projects"] = [p.name for p in _projects]
+        config["params"] = params
+
+        if len(mounts) > 0:
+            mounts = [
+                {
+                    "source": "content",
+                    "target": "content"
+                },
+                *mounts
+            ]
+            config["module"] = {"mounts": mounts}
 
         if file.exists():
             file.unlink()
 
-        file.write_text(tomli_w.dumps(config))
+        with open(file, "w") as f:
+            yaml.dump(config, f)
         return config
 
     def handle(self) -> int:
@@ -222,8 +265,6 @@ class ConfigureCommand(Command):
 
 
 class DocsPullCommand(ConfigureCommand):
-    DESTINATION: Path = Path(__file__).parent.parent / "content/docs"
-
     name = "docs pull"
 
     description = "Pull the latest version of the documentation."
@@ -236,32 +277,47 @@ class DocsPullCommand(ConfigureCommand):
         elif self.DESTINATION.exists():
             shutil.rmtree(self.DESTINATION)
 
+        self.DESTINATION.mkdir(parents=True)
+
+        with open(self.DESTINATION / "_index.md", "w") as f:
+            f.write("---\n")
+            f.write("title: \"\"\n")
+            f.write("draft: false\n")
+            f.write("layout: \"home\"\n")
+            f.write("---\n")
+
         for p in _projects:
-            versions = content[p.name]["versions"]
-            branches = get_branches(p)
-            default_version = content["config"]["params"][p.name]["documentation"][
-                "defaultVersion"
-            ]
+            project_params = content["params"][p.name]
+            versions = project_params["documentation"]["versions"]
+            default_version = project_params["documentation"]["defaultVersion"]
             destination = self.DESTINATION / p.path
 
             destination.mkdir(parents=True)
+            with open(destination / "_index.md", "w") as f:
+                f.write("---\n")
+                f.write("title: \"Redirecting...\"\n")
+                f.write("layout: redirect\n")
+                f.write("params:\n")
+                f.write(f"  url: \"/{p.name}/{default_version}/\"\n")
+                f.write("---\n")
 
             if self.option(f"local-{p.name}"):
-                self._pull_local_version(
-                    src=Path(self.option(f"local-{p.name}")),
-                    dest=destination,
-                    editable=self.option(f"editable-{p.name}"),
-                )
+                if not self.option(f"editable-{p.name}"):
+                    self._pull_local_version(
+                        src=Path(self.option(f"local-{p.name}")),
+                        dest=destination / default_version,
+                        editable=self.option(f"editable-{p.name}"),
+                    )
                 continue
 
-            items: dict = dict(**branches, **versions)
-            items: list = list(items.items())
-            items.sort(key=lambda x: x[0] != default_version)
+            versions_sorted = list(versions.items())
+            versions_sorted.sort(key=lambda x: x[0] != default_version)
 
-            for x in items:
+            for x in versions_sorted:
                 k, v = x
                 is_default = default_version == k
                 self._pull_version(
+                    project=p,
                     repo=p.repo_url,
                     version=k,
                     dest=destination,
@@ -279,13 +335,18 @@ class DocsPullCommand(ConfigureCommand):
             raise Exception(f"Source directory {src} does not exist")
         if not src.is_dir():
             raise Exception(f"Source {src} is not a directory")
+        # Symlink directory to destination
+        if dest.is_symlink():
+            dest.unlink()
+        elif dest.exists():
+            shutil.rmtree(dest)
         if editable:
-            # Symlink directory to destination
-            dest.rmdir()
             dest.symlink_to(src, target_is_directory=True)
         else:
             # Copy files at the root of the destination
-            for filepath in src.glob("**/*.md"):
+            for filepath in src.glob("**/*"):
+                if not Path(filepath).is_file():
+                    continue
                 postfix = filepath.relative_to(src)
                 target = dest / postfix
                 target.parent.mkdir(parents=True, exist_ok=True)
@@ -293,6 +354,7 @@ class DocsPullCommand(ConfigureCommand):
 
     def _pull_version(
         self,
+        project: Project,
         repo: str,
         version: str,
         dest: Path,
@@ -332,34 +394,44 @@ class DocsPullCommand(ConfigureCommand):
                 subprocess.run(["git", "sparse-checkout", "init", "--cone"])
                 subprocess.run(["git", "sparse-checkout", "set", "docs"])
 
-                if is_default:
-                    self._pull_local_version(tmp_dir, dest)
-                else:
-                    path.mkdir()
-                    docs_dir = tmp_dir / "docs"
+                path.mkdir()
+                docs_dir = tmp_dir / "docs"
 
-                    for filepath in docs_dir.glob("**/*.md"):
-                        postfix = filepath.relative_to(docs_dir)
-                        target_path = path / postfix
-                        target_path.parent.mkdir(parents=True, exist_ok=True)
+                for filepath in docs_dir.glob("**/*"):
+                    if not Path(filepath).is_file():
+                        continue
 
-                        if filepath.suffix == ".md":
-                            with filepath.open() as f:
-                                content = f.read()
+                    postfix = filepath.relative_to(docs_dir)
+                    target_path = path / postfix
+                    target_path.parent.mkdir(parents=True, exist_ok=True)
 
-                            # Load front matter data
-                            _, frontmatter, content = content.split("---", maxsplit=2)
-                            frontmatter = yaml.safe_load(frontmatter)
-                            frontmatter["title"] += f" | {version}"
-                            menu_name = list(frontmatter["menu"].keys()).pop()
-                            menu_name0 = f"{menu_name}_{version}"
-                            frontmatter["menu"] = {menu_name0: frontmatter["menu"][menu_name]}
-                            new_frontmatter = yaml.dump(frontmatter).strip()
-                            new_content = f"---\n{new_frontmatter}\n---\n{content}"
-                            with target_path.open("w") as f:
-                                f.write(new_content)
-                        else:
-                            shutil.copyfile(filepath, target_path)
+                    if filepath.suffix == ".md":
+                        with filepath.open() as f:
+                            content = f.read()
+
+                        # Load front matter data
+                        _, frontmatter, content = content.split("---", maxsplit=2)
+                        frontmatter = yaml.safe_load(frontmatter)
+                        menu_names = list(frontmatter["menu"].keys())
+                        params = {}
+                        if menu_names:
+                            entry = frontmatter["menu"][menu_names[0]]
+                            name = f"{project.name}__{version}"
+                            frontmatter["menu"] = {name: entry}
+                            params["_menu"] = name
+                        #if is_default and filepath.name == "_index.md" and filepath.parent.name == "docs":
+                        #    frontmatter["aliases"] = [f"/{project.name}/", f"/{project.name}"]
+                        frontmatter["params"] = {
+                            **params,
+                            "_version": version,
+                            "_project": project.name,
+                        }
+                        new_frontmatter = yaml.dump(frontmatter).strip()
+                        new_content = f"---\n{new_frontmatter}\n---\n{content}"
+                        with target_path.open("w") as f:
+                            f.write(new_content)
+                    else:
+                        shutil.copyfile(filepath, target_path)
         finally:
             os.chdir(cwd.as_posix())
 

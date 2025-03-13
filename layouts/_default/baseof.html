@@ -5,11 +5,11 @@
 
   <body>
     {{- partial "dark_mode.html" . -}}
-    {{- partial "header.html" . -}}
-    <div id="content">
+    <div class="flex min-h-screen flex-col">
+      {{- partial "header.html" . -}}
       {{ block "main" . }}{{ end }}
+      {{- partial "footer.html" . -}}
     </div>
-    {{- partial "footer.html" . -}}
     {{- partial "scripts.html" . -}}
   </body>
 </html>

@@ -10,10 +10,8 @@ requires-python = ">=3.12"
 license = { text = "MIT" }
 dependencies = [
     "cleo>=1.0.0a5",
-    "PyYAML>=6.0",
-    "tomli>=2.0",
     "httpx>=0.23",
-    "tomli-w>=1.0",
+    "PyYAML>=6.0.2",
 ]
 
 [dependency-groups]
@@ -59,31 +57,3 @@ required-imports = ["from __future__ import annotations"]
 [tool.black]
 target-version = ["py310"]
 preview = true
-
-[tool.website.config]
-baseURL = "https://lintr.org/"
-languageCode = "en-us"
-title = "Lintr - A powerful and flexible GitHub repository settings linter"
-
-ignoreFiles = ["^assets/src"]
-pygmentsUseClasses = true
-
-[tool.website.config.permalinks]
-categories = "/blog/category/:title/"
-tags = "/blog/tag/:title/"
-
-[tool.website.config.params]
-description = "A powerful and flexible GitHub repository settings linter"
-
-[tool.website.config.params.lintr.documentation]
-defaultVersion = "main"
-
-[tool.website.config.markup.goldmark.renderer]
-unsafe = true
-
-[tool.website.config.minify.tdewolff.html]
-keepWhitespace = true
-
-[tool.website.lintr.versions]
-"0.2.0" = "0.2.0"
-#"0.6.0" = "0.6.0"

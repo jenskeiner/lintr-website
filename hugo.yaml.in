@@ -1,0 +1,22 @@
+baseURL: https://docs.jenscodes.sh/
+ignoreFiles:
+- ^assets/src
+languageCode: en-us
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+    renderHooks:
+      link:
+        enableDefault: true
+minify:
+  tdewolff:
+    html:
+      keepWhitespace: true
+params:
+  description: Docs
+permalinks:
+  categories: /blog/category/:title/
+  tags: /blog/tag/:title/
+pygmentsUseClasses: true
+title: Docs

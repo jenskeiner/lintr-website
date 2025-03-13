@@ -1,49 +1,21 @@
-name: "Deploy Preview"
+name: "Deploy Production"
 
 on:
-  workflow_dispatch: {}
+  schedule:
+    - cron: "0 0 * * *"
   push:
-    branches-ignore:
+    branches:
       - main
-  pull_request_target:
-    # enable runs for this workflow when labeled as safe only
-    # prevent execution when the workflow itself is modified from a fork
-    types:
-      - labeled
-      - synchronize
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
-
-env:
-  PYTHON_VERSION: "3.13"
+  workflow_dispatch: {}
 
 jobs:
   deploy-preview:
     name: Build & Deploy
     runs-on: ubuntu-latest
-    # foo
-    #if: |
-    #  (github.event_name == 'pull_request_target' && contains(github.event.labels.*.name, 'safe'))
-    #  || (github.event_name == 'push' && github.event.repository.full_name == github.repository)
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-
-      - name: Print environment variables
-        run: |
-          echo "Condition 1: ${{ (github.event_name == 'pull_request_target' && contains(github.event.pull_request.labels.*.name, 'safe')) }}"
-          echo "Condition 2: ${{ (github.event_name == 'push' && github.event.repository.full_name == github.repository) }}"
-          echo "Event name: ${{ github.event_name }}"
-          echo "Labels: ${{ github.event.pull_request.labels }}"
-          echo "Safe label present: ${{ contains(github.event.pull_request.labels.*.name, 'safe') }}"
-          echo "Push repository name: ${{ github.event.repository.full_name }}"
-          echo "Repository: ${{ github.repository }}"
-          cat $GITHUB_EVENT_PATH
-
       - name: Install uv
         uses: astral-sh/setup-uv@v5
         with:
@@ -66,14 +38,14 @@ jobs:
         with:
           step: start
           token: ${{ secrets.GITHUB_TOKEN }}
-          env: Preview
+          env: Production
       - name: Install Hugo
         uses: peaceiris/actions-hugo@v2
         with:
           hugo-version: "0.145.0"
           extended: true
       - name: Build
-        run: hugo build --buildDrafts --buildFuture
+        run: hugo build --minify
       - name: Deploy
         uses: amondnet/vercel-action@v25
         id: vercel-action
@@ -82,7 +54,8 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          github-comment: true
+          github-comment: false
+          vercel-args: "--prod"
           working-directory: public
       - name: Update Deployment Status
         uses: bobheadxi/deployments@v1

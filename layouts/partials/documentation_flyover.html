@@ -1,14 +1,12 @@
-{{ $currentPage := index $ "ctx" }}
-{{ $project := index $ "project" }}
-{{ $projectCtx := index $currentPage.Site.Params $project }}
-{{ $docsDirDefault := (printf "docs/%s/" $project) }}
-{{ $docsDir := $docsDirDefault }}
-{{ $docsUrlPath := (printf "/docs/%s" $project) }}
-{{ $menu := index $currentPage.Site.Menus (print "docs_" $project) }}
-{{ if eq $currentPage.Type "docs" }}
-  {{ $docsDir = $currentPage.File.Dir }}
-{{ end }}
-{{ $currentPageProject := (index (index (findRESubmatch `docs/(\w+)/.*` $currentPage.Page.File.Dir) 0) 1) }}
+{{- $page := index $ "ctx" -}}
+{{- $project := index $page.Page.Params "project" -}}
+{{- $version := index $page.Page.Params "version" -}}
+{{- $params := index $page.Site.Params $project -}}
+
+{{- $docsDirDefault := (printf "%s/" $project) -}}
+{{- $docsDir := $docsDirDefault -}}
+{{- $docsUrlPath := (printf "/%s/" $project) -}}
+{{- $menu := index $page.Site.Menus (index $page.Page.Params "menu") -}}
 <li
   class="relative flex items-center h-full"
   data-controller="flyover"
@@ -16,8 +14,8 @@
   data-action="mouseenter->flyover#open mouseleave->flyover#close"
 >
   <a
-    href="{{ $docsUrlPath | relURL }}"
-    class="self-center text-sm font-medium uppercase transition duration-300 opacity-100 hover:opacity-100 {{- if eq $project $currentPageProject }}
+    href="{{ (printf "/%s/" $project) | relURL }}"
+    class="self-center text-sm font-medium uppercase transition duration-300 opacity-100 hover:opacity-100 {{- if eq $project $project }}
       text-green-500 dark:text-green-300
     {{ end }}"
   >
@@ -54,7 +52,7 @@
       >
         {{ range sort $menu "Weight" }}
           {{ $docsDirToRender := $docsDir }}
-          {{ if (ne $project $currentPageProject) }}
+          {{ if (ne $project $project) }}
             {{ $docsDirToRender = $docsDirDefault }}
           {{ end }}
           {{ if or (eq $docsDirToRender .Page.File.Dir) (eq $docsDirToRender .Page.Parent.File.Dir)}}
@@ -78,11 +76,11 @@
       </div>
       <div class="p-5 bg-light-note sm:p-8 dark:bg-dark-note-darker">
         <div class="relative grid gap-6 sm:gap-8 lg:grid-cols-2">
-          {{ $latestVersion := $projectCtx.documentation.developmentVersion -}}
-          {{ $latestVersionPath := index $projectCtx.documentation.versions $latestVersion -}}
-          {{ $stableVersion := $projectCtx.documentation.stableVersion -}}
-          {{ $stableVersionPath := index $projectCtx.documentation.versions $stableVersion -}}
-          {{ $defaultVersion := $projectCtx.documentation.defaultVersion -}}
+          {{ $latestVersion := $params.documentation.developmentVersion -}}
+          {{ $latestVersionPath := index $params.documentation.versions $latestVersion -}}
+          {{ $stableVersion := $params.documentation.stableVersion -}}
+          {{ $stableVersionPath := index $params.documentation.versions $stableVersion -}}
+          {{ $defaultVersion := $params.documentation.defaultVersion -}}
           <a
             {{- if eq $stableVersion $defaultVersion }}
               href="{{ $docsUrlPath | relURL }}"

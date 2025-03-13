@@ -1,0 +1,16 @@
+{{- $url := printf "%s%s" .Site.BaseURL .Params.url -}}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Redirecting...</title>
+  <meta http-equiv="refresh" content="0; URL={{ $url | relURL }}">
+  <link rel="canonical" href="{{ $url | relURL }}">
+  {{- partial "stylesheets.html" . -}}
+</head>
+<body>
+  {{- partial "dark_mode.html" . -}}
+  <div id="content" class="bg-white dark:bg-gray-700">
+  </div>
+</body>
+</html>
