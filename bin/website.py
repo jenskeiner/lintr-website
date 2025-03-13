@@ -54,6 +54,11 @@ class Project(abc.ABC):
         pass
 
     @property
+    @abc.abstractmethod
+    def description(self) -> str:
+        return self.name
+
+    @property
     def display_name(self) -> str:
         return self.name
 
@@ -98,6 +103,10 @@ class LintrProject(Project):
     @property
     def name(self) -> str:
         return "lintr"
+
+    @property
+    def description(self) -> str:
+        return "A powerful and flexible GitHub repository settings linter."
 
     @property
     def display_name(self) -> str:
@@ -193,6 +202,7 @@ class ConfigureCommand(Command):
         for p in _projects:
             project_params = {
                 "name": p.display_name,
+                "description": p.description,
                 "name_short": p.display_name_short,
                 "repo_url": p.repo_url_without_extension,
             }

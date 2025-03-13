@@ -8,6 +8,7 @@ module.exports = {
     fontFamily: {
       mono: '"Jetbrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
       sans: '"Inter var", -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Ubuntu,sans-serif',
+      header: '"Bebas Neue", sans-serif',
     },
     extend: {
       colors: {
@@ -45,12 +46,16 @@ module.exports = {
         code: colors.orange,
         "light-primary": "hsl(200deg 100% 99%)",
         "light-note": "hsl(200deg 33% 95%)",
+        "light-note-secondary": "hsl(200deg 33% 80%)",
         "light-note-darker": "hsl(200deg 33% 25%)",
         "dark-note-darker": "hsl(200deg 33% 25%)",
         link: colors.blue["500"],
         "link-hover": colors.blue["400"],
         "dark-primary": "hsl(200deg 90% 90%)",
-        "dark-secondary": "hsl(200deg 33% 17%)",
+        "dark-secondary": "hsl(200deg 33% 22%)",
+        "dark-bg-primary": "hsl(200deg 33% 12%)",
+        "dark-bg-secondary": "hsl(200deg 33% 17%)",
+        "dark-bg-tertiary": "hsl(200deg 33% 30%)",
         "dark-code": "hsl(200deg 33% 12%)",
         highlight: "#012a4a",
       },

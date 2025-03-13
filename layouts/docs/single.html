@@ -7,18 +7,13 @@
     {{- $menuName = "lintr" -}}
   {{- end -}}
   {{- $menu := index .Site.Menus $menuName -}}
-  <div class="w-full mt-48 max-w-7xl mx-auto pb-16 px-12 md:mt-18 lg:px-0">
-    <div class="lg:flex">
-      <!-- Sidebar -->
-      <div
-        class="hidden z-10 lg:flex-none h-full lg:flex lg:pt-0 lg:static lg:h-auto lg:overflow-y-visible lg:pt-0 lg:w-60 xl:w-80 lg:block"
-      >
-        <div
-          class="h-[94vh] top-8 overflow-y-auto scrolling-touch lg:h-[94vh] lg:block lg:relative lg:sticky overflow-hidden lg:top-8 mr-24 lg:mr-0"
-        >
+  <main class="flex flex-grow flex-col">
+    <div class="container mx-auto px-4 pt-8">
+      <div class="grid grid-cols-3 gap-4">
+        <div class="col-span-1 hidden z-10 lg:block lg:relative">
           <nav
             id="documentation-menu"
-            class="px-1 overflow-y-auto font-medium text-base sm:px-3 xl:px-5 lg:text-sm sticky?lg:h-(screen-18)"
+            class="overflow-y-auto font-medium text-base lg:text-sm sticky top-4 max-h-[calc(100vh-6rem)]"
           >
             <ul>
               {{ range sort $menu "Weight" }}
@@ -46,10 +41,9 @@
             </ul>
           </nav>
         </div>
-      </div>
       <!-- /Sidebar -->
       <div
-        class="relative w-full mb-12 mx-auto md:w-8/12 lg:hidden"
+        class="col-span-1 relative w-full mb-12 mx-auto md:w-8/12 lg:hidden"
         data-controller="select"
         data-action="select:click:outside->select#close"
       >
@@ -144,6 +138,7 @@
       <!-- /Sidebar -->
 
       <!-- Content -->
+        <div id="content" class="col-span-2">
       <main
         id="docs"
         class="min-w-0 w-full lg:px-12 lg:flex-auto lg:static lg:max-h-full lg:overflow-visible"
@@ -159,7 +154,10 @@
         {{ $content = $content | replaceRE "(<table[^>]*>(?:.|\n)+?</table>)" `<div class="table-wrapper">${1}</div>` | safeHTML }}
         {{ $content }}
       </main>
+          </div>
       <!-- /Content -->
     </div>
   </div>
+  </div>
+  </main>
 {{ end }}
