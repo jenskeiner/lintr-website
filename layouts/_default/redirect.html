@@ -4,8 +4,8 @@
 <head>
   <meta charset="utf-8">
   <title>Redirecting...</title>
-  <meta http-equiv="refresh" content="0; URL={{ $url }}">
-  <link rel="canonical" href="{{ $url }}">
+  <meta http-equiv="refresh" content="0; URL={{ $url | relURL }}">
+  <link rel="canonical" href="{{ $url | relURL }}">
   {{- partial "stylesheets.html" . -}}
 </head>
 <body>
