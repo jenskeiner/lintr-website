@@ -88,7 +88,7 @@
   @apply text-indigo-700 border-indigo-300 bg-indigo-100 bg-opacity-30;
 }
 
-#content main ul:not(.select-menu):not(.pagination) {
+#content main ul:not(.select-menu):not(.pagination):not(#TableOfContents ul):not(#TableOfContents nav ul) {
   @apply list-inside mt-0 mb-4 pl-8;
 }
 
@@ -106,7 +106,7 @@
   counter-increment: count;
 }
 
-#content main ul:not(.select-menu):not(.pagination) > li:before {
+#content main ul:not(.select-menu):not(.pagination):not(#TableOfContents ul):not(#TableOfContents nav ul) > li:before {
   @apply absolute w-1.5 h-1.5 -left-4 bg-blue-400 rounded-full;
   top: 0.825rem;
   content: " ";
