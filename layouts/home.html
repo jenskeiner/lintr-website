@@ -13,10 +13,11 @@
       <h2 class="mb-8 !font-header !text-6xl">Projects</h2>
       <div class="grid gap-8 md:grid-cols-2">
         {{- range .Site.Params.projects -}}
-          <a class="cursor-pointer rounded-lg border-2 border-transparent bg-light-note dark:bg-dark-bg-secondary p-6 transition-all duration-200 ease-in-out hover:border-link" href="{{ printf "/%s" . | relURL }}">
+          <a class="cursor-pointer rounded-lg border-2 border-transparent bg-light-note dark:bg-dark-bg-secondary p-6 transition-all duration-200 ease-in-out hover:border-link relative" href="{{ printf "/%s" . | relURL }}">
           {{- $projectParams := index $.Site.Params . -}}
           <h3 class="mb-2 text-green-500 dark:text-green-300">{{ $projectParams.name }}</h3>
           <p>{{ $projectParams.description }}</p>
+          <span class="absolute bottom-0 mb-4 right-0 mr-4 text-sm opacity-50">{{ $projectParams.documentation.defaultVersion }}</span>
           </a>
         {{- end -}}
       </div>
