@@ -13,13 +13,13 @@
 {{- $menuName = "lintr" -}}
 {{- end -}}
 {{- $menu := index .Site.Menus $menuName -}}
-<header class="bg-light-note-secondary dark:bg-dark-bg-primary">
+<header class="bg-light-note-secondary dark:bg-dark-bg-primary sticky top-0 w-full z-50">
     <div class="container mx-auto flex items-center justify-between p-4">
-        <div class="flex items-center space-x-4 md:space-x-6">
+        <div class="flex items-center space-x-4 lg:space-x-0">
             <div data-controller="menu" data-action="keydown->menu#close">
                 <div class="lg:hidden">
                     <button type="button"
-                            class="rounded-md p-2 inline-flex items-center justify-center"
+                            class="rounded-md py-2 inline-flex items-center justify-center"
                             data-menu-target="button" data-action="click->menu#open" aria-expanded="false">
                         <span class="sr-only">Open menu</span>
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentcolor" aria-hidden="true">

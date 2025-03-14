@@ -1,51 +1,51 @@
 {{ define "main" }}
-  {{- $project := index .Page.Params "_project" -}}
-  {{- $version := index .Page.Params "_version" -}}
-  {{- $params := index .Site.Params $project -}}
-  {{- $menuName := index .Page.Params "_menu" -}}
-  {{- if not $menuName -}}
-    {{- $menuName = "lintr" -}}
-  {{- end -}}
-  {{- $menu := index .Site.Menus $menuName -}}
-  <main class="flex flex-grow flex-col">
-    <div class="container mx-auto px-4 pt-8">
-      <div class="grid grid-cols-3 gap-4">
-        <div class="col-span-1 hidden z-10 lg:block lg:relative">
-          <nav
-            id="documentation-menu"
-            class="overflow-y-auto font-medium text-base lg:text-sm sticky top-4 max-h-[calc(100vh-6rem)]"
-          >
-            <ul>
-              {{ range sort $menu "Weight" }}
-                  <li class="pb-6">
-                    {{ $render := $.IsMenuCurrent .Menu .}}
-                    {{ if and (not $render) .HasChildren }}
-                      {{ range .Children }}
-                        {{ if $.IsMenuCurrent .Menu . }}
-                          {{ $render = true }}
-                        {{ end }}
-                      {{ end }}
-                    {{ end }}
-                    <a
-                      href="{{ .Page.RelPermalink }}"
-                      class="text-2xl {{ if $render }}
+{{- $project := index .Page.Params "_project" -}}
+{{- $version := index .Page.Params "_version" -}}
+{{- $params := index .Site.Params $project -}}
+{{- $menuName := index .Page.Params "_menu" -}}
+{{- if not $menuName -}}
+{{- $menuName = "lintr" -}}
+{{- end -}}
+{{- $menu := index .Site.Menus $menuName -}}
+<main class="flex flex-grow flex-col">
+    <div class="container mx-auto px-4 flex flex-row">
+
+        <aside class="hidden lg:block lg:relative w-1/3">
+            <div class="sticky top-[72px] overflow-y-auto sidebar-scrollbar max-h-[calc(100vh-116px)]">
+                <nav
+                        id="documentation-menu"
+                        class="font-medium text-base lg:text-sm pt-8"
+                >
+                    <ul>
+                        {{ range sort $menu "Weight" }}
+                        <li class="pb-6">
+                            {{ $render := $.IsMenuCurrent .Menu .}}
+                            {{ if and (not $render) .HasChildren }}
+                            {{ range .Children }}
+                            {{ if $.IsMenuCurrent .Menu . }}
+                            {{ $render = true }}
+                            {{ end }}
+                            {{ end }}
+                            {{ end }}
+                            <a
+                                    href="{{ .Page.RelPermalink }}"
+                                    class="text-2xl {{ if $render }}
                         text-green-500 dark:text-green-300
                       {{ end }}"
-                      >{{ index (split .Name "|") 0 -}}</a
-                    >
-                    {{ if $render }}
-                      {{ .Page.TableOfContents }}
-                    {{ end }}
-                  </li>
-              {{ end }}
-            </ul>
-          </nav>
-        </div>
-      <!-- /Sidebar -->
+                            >{{ index (split .Name "|") 0 -}}</a
+                            >
+                            {{ if $render }}
+                            {{ .Page.TableOfContents }}
+                            {{ end }}
+                        </li>
+                        {{ end }}
+                    </ul>
+                </nav>
+            </div>
+        </aside>
 
-      <!-- Content -->
-        <div id="content" class="col-span-3 lg:col-span-2">
-      <main
+        <div id="content" class="w-full lg:w-2/3 pt-8">
+            <main
         id="docs"
         class="min-w-0 w-full lg:px-12 lg:flex-auto lg:static lg:max-h-full lg:overflow-visible"
         data-controller="clipboard"
@@ -60,10 +60,8 @@
         {{ $content = $content | replaceRE "(<table[^>]*>(?:.|\n)+?</table>)" `<div class="table-wrapper">${1}</div>` | safeHTML }}
         {{ $content }}
       </main>
-          </div>
-      <!-- /Content -->
+        </div>
+
     </div>
-  </div>
-  </div>
-  </main>
+</main>
 {{ end }}
