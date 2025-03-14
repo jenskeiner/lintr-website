@@ -13,7 +13,7 @@
 {{- $menuName = "lintr" -}}
 {{- end -}}
 {{- $menu := index .Site.Menus $menuName -}}
-<header class="bg-light-note-secondary dark:bg-dark-bg-primary sticky top-0 z-50">
+<header class="bg-light-note-secondary dark:bg-dark-bg-primary sticky top-0 w-full z-50">
     <div class="container mx-auto flex items-center justify-between p-4">
         <div class="flex items-center space-x-4 lg:space-x-0">
             <div data-controller="menu" data-action="keydown->menu#close">
