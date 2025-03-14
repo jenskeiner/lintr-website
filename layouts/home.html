@@ -17,7 +17,7 @@
           {{- $projectParams := index $.Site.Params . -}}
           <h3 class="mb-2 text-green-500 dark:text-green-300">{{ $projectParams.name }}</h3>
           <p>{{ $projectParams.description }}</p>
-          <span class="absolute bottom-0 mb-4 right-0 mr-4 text-sm opacity-50">{{ $projectParams.documentation.defaultVersion }}</span>
+          <span class="absolute bottom-0 mb-3 right-0 mr-4 text-sm opacity-50">{{ $projectParams.documentation.defaultVersion }}</span>
           </a>
         {{- end -}}
       </div>
