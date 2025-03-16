@@ -45,7 +45,7 @@
     data-transition-leave-to="opacity-0 scale-95"
   >
     <div
-      class="rounded-lg shadow-clean-lg ring-1 ring-secondary-200 ring-opacity-50 overflow-hidden dark:ring-1 dark:ring-dark-primary dark:shadow-clean-dark-lg"
+      class="rounded-lg shadow-clean-lg ring-1 ring-secondary-200/50 overflow-hidden dark:ring-1 dark:ring-dark-primary dark:shadow-clean-dark-lg"
     >
       <div
         class="relative grid auto-cols-fr gap-6 bg-light-primary px-5 py-6 sm:gap-8 sm:p-8 lg:grid-cols-3 dark:bg-dark-secondary"
@@ -65,7 +65,7 @@
                   {{ index (split .Name "|") 0 -}}
                 </p>
                 <p
-                  class="mt-1 text-sm overflow-hidden overflow-ellipsis opacity-60"
+                  class="mt-1 text-sm overflow-hidden text-ellipsis opacity-60"
                 >
                   {{- safeHTML (strings.TrimPrefix (index (split .Name "|") 0) (index (split .Page.Summary ". ") 0)) -}}.
                 </p>

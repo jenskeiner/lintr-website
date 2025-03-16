@@ -1,13 +1,87 @@
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
-@import "./_fonts.css";
-@import "./_base.css";
-@import "./_components.css";
-@import "./_content.css";
-@import "./_docs.css";
-@import "./_windows.css";
-@import "./_highlight.css";
-@import "./_search.css";
-@import "./_clipboard.css";
-@import "./_collapse.css";
+@import 'tailwindcss' source(none);
+@import './_fonts.css' layer(utilities);
+@import './_base.css' layer(utilities);
+@import './_components.css' layer(utilities);
+@import './_content.css' layer(utilities);
+@import './_docs.css' layer(utilities);
+@import './_windows.css' layer(utilities);
+@import './_highlight.css' layer(utilities);
+@import './_search.css' layer(utilities);
+@import './_clipboard.css' layer(utilities);
+@import './_collapse.css' layer(utilities);
+
+@source "../../layouts/**/*.html";
+@source "../../assets/src/**/*.js";
+
+@theme {
+  --font-mono: "Jetbrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-sans: "Inter var", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Ubuntu, sans-serif;
+  --font-header: "Bebas Neue", sans-serif;
+
+  --color-primary-50: #f3f5f9;
+  --color-primary-100: #e6ecf4;
+  --color-primary-200: #c2cfe3;
+  --color-primary-300: #9db1d1;
+  --color-primary-400: #5377af;
+  --color-primary-500: hsl(200deg 88% 29%);
+  --color-primary-600: #08377f;
+  --color-primary-700: #072e6a;
+  --color-primary-800: #052555;
+  --color-primary-900: #041e45;
+
+  --color-secondary-50: #f5f5fc;
+  --color-secondary-100: #ecebfa;
+  --color-secondary-200: #cfcdf2;
+  --color-secondary-300: #b2afe9;
+  --color-secondary-400: #7973d9;
+  --color-secondary-500: #3f37c9;
+  --color-secondary-600: #3932b5;
+  --color-secondary-700: #2f2997;
+  --color-secondary-800: #262179;
+  --color-secondary-900: #1f1b62;
+
+  --color-light-primary: hsl(200deg 100% 99%);
+  --color-light-note: hsl(200deg 33% 95%);
+  --color-light-note-secondary: hsl(200deg 33% 80%);
+  --color-light-note-darker: hsl(200deg 33% 25%);
+  --color-dark-note-darker: hsl(200deg 33% 25%);
+  --color-dark-primary: hsl(200deg 90% 90%);
+  --color-dark-secondary: hsl(200deg 33% 22%);
+  --color-dark-bg-primary: hsl(200deg 33% 12%);
+  --color-dark-bg-secondary: hsl(200deg 33% 17%);
+  --color-dark-bg-tertiary: hsl(200deg 33% 30%);
+  --color-dark-code: hsl(200deg 33% 12%);
+  --color-highlight: #012a4a;
+  
+  --color-link: var(--color-blue-500);
+  --link-hover: var(--color-blue-400);
+
+  --font-size-base: 1.2rem;
+  --text-xs: calc(var(--font-size-base) * 0.75);
+  --text-sm: calc(var(--font-size-base) * 0.875);
+  --text-base: var(--font-size-base);
+  --text-lg: calc(var(--font-size-base) * 1.125);
+  --text-xl: calc(var(--font-size-base) * 1.25);
+  --text-2xl: calc(var(--font-size-base) * 1.5);
+  --text-3xl: calc(var(--font-size-base) * 1.875);
+  --text-4xl: calc(var(--font-size-base) * 2.25);
+  --text-5xl: calc(var(--font-size-base) * 3);
+  --text-6xl: calc(var(--font-size-base) * 3.75);
+  --text-7xl: calc(var(--font-size-base) * 4.5);
+  --text-8xl: calc(var(--font-size-base) * 6);
+  --text-9xl: calc(var(--font-size-base) * 8);
+
+  /* Light mode shadows */
+  --shadow-clean-sm: 0 1px 2px 0 hsl(240deg, 20%, 90%);
+  --shadow-clean: 0 1px 3px 0 hsl(240deg, 20%, 90%), 0 1px 2px 0 hsl(240deg, 20%, 90%);
+  --shadow-clean-md: 0 4px 6px -1px hsl(220deg, 20%, 90%), 0 2px 4px -1px hsl(220deg, 20%, 90%);
+  --shadow-clean-lg: 0 10px 15px -3px hsl(220deg, 20%, 90%), 0 4px 6px -2px hsl(220deg, 20%, 90%);
+  
+  /* Dark mode shadows */
+  --shadow-clean-dark-sm: 0 1px 2px 0 hsl(217deg, 32%, 12%);
+  --shadow-clean-dark: 0 1px 3px 0 hsl(217deg, 32%, 12%), 0 1px 2px 0 hsl(217deg, 32%, 12%);
+  --shadow-clean-dark-md: 0 4px 6px -1px hsl(217deg, 32%, 12%), 0 2px 4px -1px hsl(217deg, 32%, 12%);
+  --shadow-clean-dark-lg: 0 10px 15px -3px hsl(217deg, 32%, 12%), 0 4px 6px -2px hsl(217deg, 32%, 12%);
+}
+
+@custom-variant dark (&:where(.dark, .dark *));

@@ -3,7 +3,7 @@
 }
 
 .aa-Autocomplete .aa-DetachedSearchButton {
-  @apply flex items-center justify-start w-full text-sm p-2 rounded-md border border-secondary-200 bg-secondary-50 bg-opacity-50;
+  @apply flex items-center justify-start w-full text-sm p-2 rounded-md border border-secondary-200 bg-secondary-50/50;
 }
 
 .aa-Autocomplete .aa-DetachedSearchButton:active {
@@ -11,7 +11,7 @@
 }
 
 .aa-Autocomplete .aa-DetachedSearchButton:focus {
-  @apply outline-none;
+  @apply outline-hidden;
 }
 
 .aa-Autocomplete .aa-DetachedSearchButton .aa-DetachedSearchButtonIcon {
@@ -27,7 +27,7 @@
 }
 
 .aa-DetachedOverlay {
-  @apply fixed w-screen h-screen top-0 left-0 p-4 flex flex-col bg-gray-900 bg-opacity-25 backdrop-filter backdrop-blur-sm z-100 transition transition-all transform;
+  @apply fixed w-screen h-screen top-0 left-0 p-4 flex flex-col bg-gray-900/25 backdrop-filter backdrop-blur-xs z-100 transition transition-all transform;
 }
 
 .aa-DetachedOverlay .aa-DetachedContainer {
@@ -51,11 +51,11 @@
 }
 
 .aa-DetachedOverlay .aa-Form .aa-InputWrapper {
-  @apply flex flex-grow items-center;
+  @apply flex grow items-center;
 }
 
 .aa-DetachedOverlay .aa-Form .aa-InputWrapper input {
-  @apply h-16 mx-4 w-full text-xl appearance-none outline-none bg-transparent;
+  @apply h-16 mx-4 w-full text-xl appearance-none outline-hidden bg-transparent;
 }
 
 .aa-DetachedOverlay .aa-Form .aa-InputWrapperSuffix {
@@ -92,7 +92,7 @@
 }
 
 .aa-DetachedOverlay .aa-Panel .search-result {
-  @apply p-4 rounded-md bg-gray-100 bg-opacity-50 transition duration-300 mb-4;
+  @apply p-4 rounded-md bg-gray-100/50 transition duration-300 mb-4;
 }
 
 .aa-DetachedOverlay .aa-Panel .search-result .snippet {
@@ -116,7 +116,7 @@
 }
 
 .aa-DetachedOverlay .aa-Panel p em.highlight {
-  @apply text-blue-600 font-medium not-italic rounded;
+  @apply text-blue-600 font-medium not-italic rounded-sm;
 }
 
 .aa-DetachedOverlay .aa-Panel .aa-SourceFooter .logo-light {
@@ -127,14 +127,14 @@
   @apply hidden;
 }
 
-@screen md {
+@media (width >= theme(--breakpoint-md)) {
   .aa-DetachedOverlay {
     padding: 14vh;
   }
 }
 
 html.dark .aa-Autocomplete .aa-DetachedSearchButton {
-  @apply bg-gray-900 bg-opacity-40 border border-gray-900;
+  @apply bg-gray-900/40 border border-gray-900;
 }
 
 html.dark
@@ -145,7 +145,7 @@ html.dark
 }
 
 html.dark .aa-DetachedOverlay {
-  @apply bg-opacity-50;
+  @apply bg-gray-900/50;
 }
 
 html.dark .aa-DetachedOverlay .aa-DetachedContainer {
@@ -175,11 +175,11 @@ html.dark
 }
 
 html.dark .aa-DetachedOverlay .aa-Panel .search-result {
-  @apply bg-gray-900 bg-opacity-10;
+  @apply bg-gray-900/10;
 }
 
 html.dark .aa-DetachedOverlay .aa-Panel .search-result:hover {
-  @apply bg-opacity-25;
+  @apply bg-gray-900/25;
 }
 
 html.dark .aa-DetachedOverlay .aa-Panel .search-result h4 {

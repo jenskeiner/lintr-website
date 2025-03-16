@@ -1,9 +1,9 @@
 .btn {
-  @apply flex items-center w-full border border-primary-500 border-opacity-50 rounded-md shadow-clean-sm px-2 py-1 text-left cursor-pointer;
+  @apply flex items-center w-full border border-primary-500/50 rounded-md shadow-clean-sm px-2 py-1 text-left cursor-pointer;
 }
 
 .btn:focus {
-  @apply outline-none bg-light-note shadow-none border-opacity-100;
+  @apply outline-hidden bg-light-note shadow-none border-primary-500/100;
 }
 
 .btn.btn-flat {
@@ -15,11 +15,11 @@
 }
 
 html.dark .btn {
-  @apply bg-dark-bg-primary border border-dark-primary border-opacity-50 shadow-clean-dark-sm;
+  @apply bg-dark-bg-primary border border-dark-primary/50 shadow-clean-dark-sm;
 }
 
 html.dark .btn:focus {
-  @apply border-opacity-100 bg-dark-bg-secondary shadow-none;
+  @apply border-dark-primary/100 bg-dark-bg-secondary shadow-none;
 }
 
 html.dark .btn.btn-flat {
@@ -27,5 +27,5 @@ html.dark .btn.btn-flat {
 }
 
 html.dark .btn.btn-flat:focus {
-  @apply border-blue-400 border-opacity-50;
+  @apply border-blue-400/50;
 }
