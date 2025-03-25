@@ -74,6 +74,9 @@ jobs:
           extended: true
       - name: Build
         run: hugo build --buildDrafts --buildFuture
+      - name: Build search index
+        run: |
+          uv run bin/website.py build-search-index
       - name: Deploy
         uses: amondnet/vercel-action@v25
         id: vercel-action

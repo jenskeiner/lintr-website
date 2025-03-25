@@ -43,6 +43,7 @@
   --color-light-primary: hsl(200deg 100% 99%);
   --color-light-note: hsl(200deg 33% 95%);
   --color-light-note-secondary: hsl(200deg 33% 80%);
+  --color-light-note-tertiary: hsl(200deg 33% 70%);
   --color-light-note-darker: hsl(200deg 33% 25%);
   --color-dark-note-darker: hsl(200deg 33% 25%);
   --color-dark-primary: hsl(200deg 90% 90%);

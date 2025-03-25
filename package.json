@@ -8,7 +8,7 @@
     "npm": ">=7"
   },
   "scripts": {
-    "dev": "concurrently --names=assets,server --prefix-colors=cyan.bold,magenta.bold 'rollup --config --watch' 'hugo server --buildDrafts --buildFuture --watch'",
+    "dev": "concurrently --names=assets,server --prefix-colors=cyan.bold,magenta.bold 'rollup --config --watch' 'hugo server --buildDrafts --buildFuture --watch' 'sleep 3 && uv run bin/website.py build-search-index'",
     "prod": "rollup --config --failAfterWarnings --environment NODE_ENV:production",
     "algolia": "atomic-algolia"
   },
@@ -25,6 +25,7 @@
     "@rollup/plugin-image": "^2.1.1",
     "@rollup/plugin-node-resolve": "^13.0.0",
     "@rollup/plugin-replace": "^4.0.0",
+    "@tailwindcss/postcss": "^4.0.14",
     "concurrently": "^9.1.2",
     "eslint": "^9.22.0",
     "hugo-bin-extended": "^0.145.0",
@@ -37,10 +38,10 @@
     "rollup-plugin-postcss": "^4.0.0",
     "rollup-plugin-terser": "^7.0.2",
     "stimulus-use": "^0.52.3",
-    "tailwindcss": "^4.0.14",
-    "@tailwindcss/postcss": "^4.0.14"
+    "tailwindcss": "^4.0.14"
   },
   "dependencies": {
+    "lunr": "^2.3.9",
     "vercel": "^32.3.0"
   },
   "hugo-bin": {

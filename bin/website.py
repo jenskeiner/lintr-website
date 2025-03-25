@@ -16,6 +16,7 @@ import shutil
 import stat
 import subprocess
 import tempfile
+import json
 
 from contextlib import contextmanager
 from pathlib import Path
@@ -153,6 +154,14 @@ def get_branches(project: Project) -> dict[str, str]:
         if branch["name"] in project.valid_branches
     }
 
+def get_configuration_template(file: Path = Path(__file__).parent.parent / "hugo.yaml.in") -> dict[str, Any]:
+    with open(file) as f:
+        return yaml.full_load(f)
+
+def get_configuration(file: Path = Path(__file__).parent.parent / "hugo.yaml") -> dict[str, Any]:
+    with open(file) as f:
+        return yaml.full_load(f)
+
 
 class ConfigureCommand(Command):
     DESTINATION: Path = Path(__file__).parent.parent / "content"
@@ -179,21 +188,11 @@ class ConfigureCommand(Command):
         )
     )
 
-    @staticmethod
-    def get_configuration_template(file: Path = Path(__file__).parent.parent / "hugo.yaml.in") -> dict[str, Any]:
-        with open(file) as f:
-            return yaml.full_load(f)
-
-    @staticmethod
-    def get_configuration(file: Path = Path(__file__).parent.parent / "hugo.yaml") -> dict[str, Any]:
-        with open(file) as f:
-            return yaml.full_load(f)
-
     def render(self, file: Path | None = None) -> None:
         if file is None:
             file = Path(__file__).parent.parent / "hugo.yaml"
 
-        content = self.get_configuration_template()
+        content = get_configuration_template()
         config = content
         params = config.get("params", {})
 
@@ -270,7 +269,7 @@ class DocsPullCommand(ConfigureCommand):
     description = "Pull the latest version of the documentation."
 
     def handle(self) -> int:
-        content = self.get_configuration()
+        content = get_configuration()
 
         if self.DESTINATION.is_symlink():
             self.DESTINATION.unlink()
@@ -413,7 +412,7 @@ class DocsPullCommand(ConfigureCommand):
                         _, frontmatter, content = content.split("---", maxsplit=2)
                         frontmatter = yaml.safe_load(frontmatter)
                         menu_names = list(frontmatter["menu"].keys())
-                        params = {}
+                        params = frontmatter.get("params", {})
                         if menu_names:
                             entry = frontmatter["menu"][menu_names[0]]
                             name = f"{project.name}__{version}"
@@ -432,6 +431,18 @@ class DocsPullCommand(ConfigureCommand):
                             f.write(new_content)
                     else:
                         shutil.copyfile(filepath, target_path)
+
+            with open(path / "search_index.md", "w") as f:
+                f.write("---\n")
+                f.write("params:\n")
+                f.write(f"  _menu: \"{project.name}__{version}\"\n")
+                f.write(f"  _project: \"{project.name}\"\n")
+                f.write(f"  _version: \"{version}\"\n")
+                f.write("type: json\n")
+                f.write("layout: search_index\n")
+                f.write(f"url: \"/{project.name}/{version}/search_index.json\"\n")
+                f.write("---\n")
+
         finally:
             os.chdir(cwd.as_posix())
 
@@ -445,10 +456,87 @@ class BuildCommand(DocsPullCommand):
         return super().handle()
 
 
+class BuildSearchIndexCommand(Command):
+    name = "build-search-index"
+    description = "Generate website search index."
+    options: ClassVar[list[Option]] = list(
+        itertools.chain.from_iterable(
+            [
+                [
+                    option(
+                        f"local-{p.name}",
+                        None,
+                        f"Build from local {p.display_name} source.",
+                        flag=False,
+                    ),
+                    option(
+                        f"editable-{p.name}",
+                        None,
+                        f"Symlink local {p.display_name} source rather than copying.",
+                    ),
+                ]
+                for p in _projects
+            ]
+        )
+    )
+
+    def build_search_index(self, file: Path | None = None) -> None:
+        output_dir = Path(__file__).parent.parent / "public"
+        config = get_configuration()
+
+        for p in _projects:
+            project_params = config["params"][p.name]
+            versions = project_params["documentation"]["versions"]
+
+            for v in versions:
+                self.build_search_index_for_project_version(output_dir / p.name / v)
+
+    @staticmethod
+    def build_search_index_for_project_version(dir: Path) -> None:
+        from parser import Parser
+        search_index_path = dir / "search_index.json"
+        if search_index_path.exists():
+            with open(search_index_path, "r", encoding="utf-8") as f:
+                search_index = json.load(f)
+
+            print(f"Loaded search index from {search_index_path} with {len(search_index)} entries")
+
+            new_index = []
+
+            for entry in search_index:
+                parser = Parser()
+                parser.feed(entry["text"])
+                parser.close()
+
+                for section in parser.data:
+                    if not section.is_excluded():
+                        if not section.title:
+                            section.title = [str(entry["title"])]
+                        title = "".join(section.title).strip()
+                        text = "".join(section.text).strip()
+                        location = entry["location"]
+                        if section.id:
+                            location += f"#{section.id}"
+                        new_index.append({"location": location, "title": title, "text": text, "tags": entry["tags"]})
+
+            print(f"Processed search index with {len(new_index)} entries")
+
+            with open(search_index_path, "w", encoding="utf-8") as f:
+                json.dump(new_index, f, indent=2)
+                print(f"Wrote search index to {search_index_path}")
+        else:
+            print(f"Search index file not found at {search_index_path}")
+
+    def handle(self) -> int:
+        self.build_search_index()
+        return 0
+
+
 app = Application()
 app.add(ConfigureCommand())
 app.add(DocsPullCommand())
 app.add(BuildCommand())
+app.add(BuildSearchIndexCommand())
 
 
 if __name__ == "__main__":
