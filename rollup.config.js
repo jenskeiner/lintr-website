@@ -1,13 +1,23 @@
 import commonjs from "@rollup/plugin-commonjs"
-import resolve from "@rollup/plugin-node-resolve"
+import nodeResolve from "@rollup/plugin-node-resolve"
 import babel from "@rollup/plugin-babel"
 import eslint from "@rollup/plugin-eslint"
 import { terser } from "rollup-plugin-terser"
 import postcss from "rollup-plugin-postcss"
 import replace from "@rollup/plugin-replace"
 import image from "@rollup/plugin-image"
-
 import path from "path"
+import { readFileSync } from 'fs';
+import { resolve, dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Load JSON config
+const eslintConfig = JSON.parse(
+  readFileSync(resolve(__dirname, '.eslintrc.json'), 'utf8')
+);
 
 const dev = {
   input: "src/app.js",
@@ -17,7 +27,7 @@ const dev = {
   },
   context: "window",
   plugins: [
-    resolve({
+    nodeResolve({
       preferBuiltins: true,
     }),
     commonjs(),
@@ -33,7 +43,9 @@ const dev = {
       extract: true,
       minimize: false,
     }),
-    eslint(),
+    eslint({
+      ...eslintConfig
+    }),
     babel({
       exclude: "node_modules/**",
       configFile: path.resolve(__dirname, "babel.config.json"),
@@ -53,7 +65,7 @@ const prod = {
   },
   context: "window",
   plugins: [
-    resolve({
+    nodeResolve({
       preferBuiltins: true,
     }),
     commonjs(),
@@ -69,7 +81,9 @@ const prod = {
       extract: true,
       minimize: true,
     }),
-    eslint(),
+    eslint({
+      ...eslintConfig
+    }),
     babel({
       exclude: "node_modules/**",
       configFile: path.resolve(__dirname, "babel.config.json"),
