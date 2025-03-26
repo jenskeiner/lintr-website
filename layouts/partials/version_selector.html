@@ -8,7 +8,7 @@
 {{- $version = $params.documentation.defaultVersion -}}
 {{- end -}}
 {{- $versions := $params.documentation.versions -}}
-<div data-controller="menu" data-action="keydown->menu#close">
+<div>
     <div
             class="relative md:mr-0"
             data-controller="select"
@@ -25,9 +25,9 @@
         >
           <span
                   aria-label="Selected"
-                  class="bg-green-500 flex-shrink-0 inline-block h-2 w-2 rounded-full dark:bg-green-300"
+                  class="bg-green-500 shrink-0 inline-block h-2 w-2 rounded-full dark:bg-green-300"
           ></span>
-            <span class="flex-grow ml-2 truncate font-medium">
+            <span class="grow ml-2 truncate font-medium">
             {{ $version }}
           </span>
             <span
@@ -50,7 +50,7 @@
           </span>
         </button>
         <ul
-                class="hidden absolute z-10 mt-1 w-full shadow-clean-lg max-h-60 rounded-md py-1 px-1 text-base ring-1 ring-secondary-200 ring-opacity-50 overflow-auto transition transform focus:outline-none sm:text-sm bg-light-note dark:bg-dark-bg-secondary dark:shadow-clean-dark-lg dark:ring-0"
+                class="hidden absolute z-10 mt-1 w-full shadow-clean-lg max-h-60 rounded-md py-1 px-1 text-base ring-1 ring-secondary-200/50 overflow-auto transition transform focus:outline-hidden sm:text-sm bg-light-note dark:bg-dark-bg-secondary dark:shadow-clean-dark-lg dark:ring-0"
                 data-select-target="menu"
                 tabindex="-1"
                 role="listbox"
@@ -71,16 +71,16 @@
                 {{ $url := (printf "/%s/%s/" $project $name) }}
                 <a
                         href="{{ $url | relURL }}"
-                        class="flex justify-end items-center content-center transition py-2 px-1.5 rounded duration-300 hover:bg-light-note-darker dark:hover:bg-dark-note-darker"
+                        class="flex justify-end items-center content-center transition py-2 px-1.5 rounded-sm duration-300 hover:bg-light-note-darker dark:hover:bg-dark-note-darker"
                 >
                     {{ if eq $version $name }}
                     <span
                             aria-label="Selected"
-                            class="bg-green-500 flex-shrink-0 inline-block h-2 w-2 rounded-full dark:bg-green-300"
+                            class="bg-green-500 shrink-0 inline-block h-2 w-2 rounded-full dark:bg-green-300"
                     ></span>
                     {{ end }}
                     <span
-                            class="flex-grow self-center ml-2 {{ if ne $version . }}
+                            class="grow self-center ml-2 {{ if ne $version . }}
                     ml-5 font-normal
                   {{ else }}
                     font-medium

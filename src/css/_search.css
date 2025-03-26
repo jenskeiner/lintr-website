@@ -1,203 +1,163 @@
-.aa-Autocomplete {
-  @apply flex items-center w-full;
+.search .search-overlay {
+  @apply opacity-0 z-1 bg-black/50 h-0 fixed left-0 top-0 w-0;
+  transition:width 0ms .25s,height 0ms .25s,opacity .25s;
 }
 
-.aa-Autocomplete .aa-DetachedSearchButton {
-  @apply flex items-center justify-start w-full text-sm p-2 rounded-md border border-secondary-200 bg-secondary-50 bg-opacity-50;
+.search .search-overlay.search-expanded {
+  height:200vh;
+  opacity: 1;
+  transition:width 0ms,height 0ms,opacity .25s;
+  width: 100%;
 }
 
-.aa-Autocomplete .aa-DetachedSearchButton:active {
-  @apply ring-indigo-500 border-indigo-500;
+.search .search-expandable {
+  @apply w-48 z-2 bg-light-note-secondary dark:bg-dark-bg-primary bg-transparent;
+  transition:width .25s cubic-bezier(.1,.7,.1,1);
 }
 
-.aa-Autocomplete .aa-DetachedSearchButton:focus {
-  @apply outline-none;
+.search .search-expandable.search-expanded {
+  @apply w-200;
 }
 
-.aa-Autocomplete .aa-DetachedSearchButton .aa-DetachedSearchButtonIcon {
-  @apply mr-2 w-4 h-4 inline-block;
-  background-image: url('data:image/svg+xml; utf8, <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="%23818CF8" d="M508.5 481.6l-129-129c-2.3-2.3-5.3-3.5-8.5-3.5h-10.3C395 312 416 262.5 416 208 416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c54.5 0 104-21 141.1-55.2V371c0 3.2 1.3 6.2 3.5 8.5l129 129c4.7 4.7 12.3 4.7 17 0l9.9-9.9c4.7-4.7 4.7-12.3 0-17zM208 384c-97.3 0-176-78.7-176-176S110.7 32 208 32s176 78.7 176 176-78.7 176-176 176z"></path></svg>');
+.search .search-input {
+  @apply bg-light-note-tertiary w-full pl-[3.2rem] p-1 rounded-t-md;
 }
 
-.aa-Autocomplete .aa-DetachedSearchButton .aa-DetachedSearchButtonIcon svg {
-  @apply hidden;
+.search .search-input:not(.search-expanded) {
+  @apply rounded-b-md;
 }
 
-.aa-Autocomplete .aa-DetachedSearchButton .aa-DetachedSearchButtonPlaceholder {
+.search .search-icon {
+  @apply absolute top-[.35rem] left-[.75rem] h-[1.6rem] w-[1.6rem];
 }
 
-.aa-DetachedOverlay {
-  @apply fixed w-screen h-screen top-0 left-0 p-4 flex flex-col bg-gray-900 bg-opacity-25 backdrop-filter backdrop-blur-sm z-100 transition transition-all transform;
+.search .search-icon::after{
+  background-color:currentColor;
+  content:"";
+  display:inline-block;
+  height:100%;
+  width:100%;
+  -webkit-mask-image:var(--search-icon);
+  mask-image:var(--search-icon);
+  -webkit-mask-position:center;
+  mask-position:center;
+  -webkit-mask-repeat:no-repeat;
+  mask-repeat:no-repeat;
+  -webkit-mask-size:contain;
+  mask-size:contain;
 }
 
-.aa-DetachedOverlay .aa-DetachedContainer {
-  @apply flex flex-col w-full max-w-3xl min-h-0 my-0 px-8 py-4 mx-auto shadow-xl bg-light-note rounded-md;
+.search .search-output {
+  @apply bg-light-note-secondary dark:bg-dark-bg-primary overflow-hidden absolute w-full z-[2] opacity-0 top-[2.3rem] transition-opacity duration-400 rounded-b-md;
 }
 
-.aa-DetachedOverlay .aa-DetachedContainer .aa-DetachedFormContainer {
-  @apply relative flex items-center;
+.search .search-output.search-expanded {
+  @apply opacity-100 shadow-md;
 }
 
-.aa-DetachedOverlay .aa-Form {
-  @apply flex flex-auto items-center;
+/* Search scrollwrap styling */
+.search .search-scrollwrap {
+  @apply max-h-[75vh] overflow-y-auto w-full;
+  scrollbar-width: thin;
 }
 
-.aa-DetachedOverlay .aa-Form .aa-InputWrapperPrefix {
-  @apply flex items-center;
+/* For Webkit browsers (Chrome, Safari, etc.) */
+.search .search-scrollwrap::-webkit-scrollbar {
+  @apply w-2;
 }
 
-.aa-DetachedOverlay .aa-Form .aa-InputWrapperPrefix .aa-LoadingIndicator {
-  @apply hidden;
+.search .search-scrollwrap::-webkit-scrollbar-track {
+  @apply bg-transparent;
 }
 
-.aa-DetachedOverlay .aa-Form .aa-InputWrapper {
-  @apply flex flex-grow items-center;
+.search .search-scrollwrap::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 dark:bg-gray-700 rounded-full;
 }
 
-.aa-DetachedOverlay .aa-Form .aa-InputWrapper input {
-  @apply h-16 mx-4 w-full text-xl appearance-none outline-none bg-transparent;
+.search .search-result-meta {
+  @apply pl-[3.2rem] pr-1 py-2 text-xs;
 }
 
-.aa-DetachedOverlay .aa-Form .aa-InputWrapperSuffix {
-  @apply hidden;
+.search .search-result-list {
+  user-select: none;
+  list-style: none;
+  word-break: break-word;
 }
 
-.aa-DetachedOverlay .aa-Form .aa-Label {
-  @apply flex-none inline-block w-6 h-6;
-  background-image: url('data:image/svg+xml; utf8, <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="%23818CF8" d="M508.5 481.6l-129-129c-2.3-2.3-5.3-3.5-8.5-3.5h-10.3C395 312 416 262.5 416 208 416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c54.5 0 104-21 141.1-55.2V371c0 3.2 1.3 6.2 3.5 8.5l129 129c4.7 4.7 12.3 4.7 17 0l9.9-9.9c4.7-4.7 4.7-12.3 0-17zM208 384c-97.3 0-176-78.7-176-176S110.7 32 208 32s176 78.7 176 176-78.7 176-176 176z"></path></svg>');
+/* Search Results Styling */
+.search-result-item {
+  @apply shadow-none;
 }
 
-.aa-DetachedOverlay .aa-Form .aa-Label button {
-  @apply hidden;
+.search-result-link {
+  @apply block outline-none text-current no-underline py-2;
+  scroll-snap-align: start;
+  transition: background-color .25s;
 }
 
-.aa-DetachedOverlay
-  .aa-DetachedContainer
-  .aa-DetachedFormContainer
-  .aa-DetachedCancelButton {
-  @apply flex-none text-indigo-400;
-  font-size: 0px;
+.search .search-result-link:hover {
+  @apply bg-light-note/35 dark:bg-dark-bg-primary;
 }
 
-.aa-DetachedOverlay
-  .aa-DetachedContainer
-  .aa-DetachedFormContainer
-  .aa-DetachedCancelButton:before {
-  @apply border border-indigo-300 bg-indigo-50 rounded-md text-sm leading-5 px-1.5 py-1;
-  content: "esc";
+.search .search-result-link article {
+  @apply relative overflow-hidden m-0 pl-[3.2rem];
+  line-height: 1.6;
 }
 
-.aa-DetachedOverlay .aa-Panel {
-  @apply relative overflow-y-scroll;
+.search .search-result-icon {
+  @apply flex absolute left-0 h-[2.0rem] w-[2.0rem] ml-[.6rem] mt-[.1rem];
 }
 
-.aa-DetachedOverlay .aa-Panel .search-result {
-  @apply p-4 rounded-md bg-gray-100 bg-opacity-50 transition duration-300 mb-4;
+.search .search-result-icon::after {
+  background-color:currentColor;
+  content:"";
+  display:inline-block;
+  height:100%;
+  width:100%;
+  -webkit-mask-image:var(--search-result-icon);
+  mask-image:var(--search-result-icon);
+  -webkit-mask-position:center;
+  mask-position:center;
+  -webkit-mask-repeat:no-repeat;
+  mask-repeat:no-repeat;
+  -webkit-mask-size:contain;
+  mask-size:contain;
 }
 
-.aa-DetachedOverlay .aa-Panel .search-result .snippet {
-  @apply whitespace-nowrap overflow-x-hidden text-ellipsis;
+.search-result-nav {
+  @apply pt-2 flex gap-2;
 }
 
-.aa-DetachedOverlay .aa-Panel .search-result:hover {
-  @apply bg-secondary-100;
+.search-result-tag {
+  @apply px-2 py-0.5 bg-light-note-tertiary rounded-full text-xs;
 }
 
-.aa-DetachedOverlay .aa-Panel .search-result h4 {
-  @apply inline-flex items-center rounded-full bg-secondary-100/50 px-2 py-1 text-xs font-medium text-secondary-600 ring-1 ring-inset ring-secondary-500/10 transition duration-300;
+.search-result-item h1 {
+  @apply flex items-center px-0 py-[0.2rem] text-base;
 }
 
-.aa-DetachedOverlay .aa-Panel .search-result:hover h4 {
-  @apply bg-secondary-200/50;
+/* Highlight matching text */
+.search-result-item em {
+  @apply text-blue-600 font-medium not-italic rounded-sm;
 }
 
-.aa-DetachedOverlay .aa-Panel p.snippet {
-  @apply text-base mt-4;
+/* Dark mode styles */
+html.dark .search-result-item {
+  @apply bg-gray-900/10;
 }
 
-.aa-DetachedOverlay .aa-Panel p em.highlight {
-  @apply text-blue-600 font-medium not-italic rounded;
+html.dark .search-result-item:hover {
+  @apply bg-gray-900/25;
 }
 
-.aa-DetachedOverlay .aa-Panel .aa-SourceFooter .logo-light {
-  @apply inline-block;
-}
-
-.aa-DetachedOverlay .aa-Panel .aa-SourceFooter .logo-dark {
-  @apply hidden;
-}
-
-@screen md {
-  .aa-DetachedOverlay {
-    padding: 14vh;
-  }
-}
-
-html.dark .aa-Autocomplete .aa-DetachedSearchButton {
-  @apply bg-gray-900 bg-opacity-40 border border-gray-900;
-}
-
-html.dark
-  .aa-Autocomplete
-  .aa-DetachedSearchButton
-  .aa-DetachedSearchButtonIcon {
-  background-image: url('data:image/svg+xml; utf8, <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="%237DD3FC" d="M508.5 481.6l-129-129c-2.3-2.3-5.3-3.5-8.5-3.5h-10.3C395 312 416 262.5 416 208 416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c54.5 0 104-21 141.1-55.2V371c0 3.2 1.3 6.2 3.5 8.5l129 129c4.7 4.7 12.3 4.7 17 0l9.9-9.9c4.7-4.7 4.7-12.3 0-17zM208 384c-97.3 0-176-78.7-176-176S110.7 32 208 32s176 78.7 176 176-78.7 176-176 176z"></path></svg>');
-}
-
-html.dark .aa-DetachedOverlay {
-  @apply bg-opacity-50;
-}
-
-html.dark .aa-DetachedOverlay .aa-DetachedContainer {
-  @apply bg-gray-700;
-}
-
-html.dark .aa-DetachedOverlay .aa-Form .aa-Label {
-  @apply flex-none inline-block w-6 h-6;
-  background-image: url('data:image/svg+xml; utf8, <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="%237DD3FC" d="M508.5 481.6l-129-129c-2.3-2.3-5.3-3.5-8.5-3.5h-10.3C395 312 416 262.5 416 208 416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c54.5 0 104-21 141.1-55.2V371c0 3.2 1.3 6.2 3.5 8.5l129 129c4.7 4.7 12.3 4.7 17 0l9.9-9.9c4.7-4.7 4.7-12.3 0-17zM208 384c-97.3 0-176-78.7-176-176S110.7 32 208 32s176 78.7 176 176-78.7 176-176 176z"></path></svg>');
-}
-
-html.dark
-  .aa-DetachedOverlay
-  .aa-DetachedContainer
-  .aa-DetachedFormContainer
-  .aa-DetachedCancelButton {
-  @apply flex-none text-blue-400;
-  font-size: 0;
-}
-
-html.dark
-  .aa-DetachedOverlay
-  .aa-DetachedContainer
-  .aa-DetachedFormContainer
-  .aa-DetachedCancelButton:before {
-  @apply border-blue-300 bg-transparent;
-}
-
-html.dark .aa-DetachedOverlay .aa-Panel .search-result {
-  @apply bg-gray-900 bg-opacity-10;
-}
-
-html.dark .aa-DetachedOverlay .aa-Panel .search-result:hover {
-  @apply bg-opacity-25;
-}
-
-html.dark .aa-DetachedOverlay .aa-Panel .search-result h4 {
+html.dark .search-result-item h1 {
   @apply bg-blue-950/50 text-blue-300 ring-blue-200/10;
 }
 
-html.dark .aa-DetachedOverlay .aa-Panel .search-result:hover h4 {
+html.dark .search-result-item:hover h1 {
   @apply bg-blue-950/80;
 }
 
-html.dark .aa-DetachedOverlay .aa-Panel p em.highlight {
+html.dark .search-result-item em {
   @apply text-blue-300;
-}
-
-html.dark .aa-DetachedOverlay .aa-Panel .aa-SourceFooter .logo-light {
-  @apply hidden;
-}
-
-html.dark .aa-DetachedOverlay .aa-Panel .aa-SourceFooter .logo-dark {
-  @apply inline-block;
 }

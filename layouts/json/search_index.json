@@ -1,0 +1,7 @@
+{{- $.Scratch.Add "searchindex" slice -}}
+{{- range $index, $element := where site.AllPages "Params.exclude_search" nil -}}
+    {{- if and (ne $element.Page.Type "json") (eq .Page.Params._menu $element.Page.Params._menu) -}}
+        {{- $.Scratch.Add "searchindex" (dict "location" $element.RelPermalink "title" $element.Title "tags" ($element.Params.tags | default slice) "text" $element.Content) -}}
+    {{- end -}}
+{{- end -}}
+{{- $.Scratch.Get "searchindex" | jsonify (dict "indent" "  " "noHTMLEscape" true) -}}

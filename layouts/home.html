@@ -1,22 +1,23 @@
 {{ define "main" }}
-<main class="flex flex-grow flex-col">
-  <section class="flex-grow bg-light-note dark:bg-dark-bg-secondary" style="height: 522px; max-height: 522px;">
+<main class="flex grow flex-col">
+  <section class="grow bg-light-note dark:bg-dark-bg-secondary" style="height: 522px; max-height: 522px;">
     <div class="container mx-auto flex h-full items-center px-4">
       <div class="flex h-full max-w-2xl flex-col justify-center">
-        <h1 class="mb-4 font-header !text-8xl uppercase">My Open-Source Projects</h1>
+        <h1 class="mb-4 font-header text-8xl! uppercase">My Open-Source Projects</h1>
         <p>This site contains documentation for my open-source projects.</p>
       </div>
     </div>
   </section>
   <section class="py-16">
     <div class="container mx-auto px-4">
-      <h2 class="mb-8 !font-header !text-6xl">Projects</h2>
+      <h2 class="mb-8 font-header! text-6xl!">Projects</h2>
       <div class="grid gap-8 md:grid-cols-2">
         {{- range .Site.Params.projects -}}
-          <a class="cursor-pointer rounded-lg border-2 border-transparent bg-light-note dark:bg-dark-bg-secondary p-6 transition-all duration-200 ease-in-out hover:border-link" href="{{ printf "/%s" . | relURL }}">
+          <a class="cursor-pointer rounded-lg border-2 border-transparent bg-light-note dark:bg-dark-bg-secondary p-6 transition-all duration-200 ease-in-out hover:border-link relative" href="{{ printf "/%s" . | relURL }}">
           {{- $projectParams := index $.Site.Params . -}}
           <h3 class="mb-2 text-green-500 dark:text-green-300">{{ $projectParams.name }}</h3>
           <p>{{ $projectParams.description }}</p>
+          <span class="absolute bottom-0 mb-3 right-0 mr-4 text-sm opacity-50">{{ $projectParams.documentation.defaultVersion }}</span>
           </a>
         {{- end -}}
       </div>

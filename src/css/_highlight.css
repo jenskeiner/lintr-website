@@ -3,7 +3,7 @@
 }
 
 .highlight pre code {
-  @apply w-full text-code-600 inline-block !important;
+  @apply w-full! text-orange-600! inline-block!;
 }
 
 .highlight pre code::selection,
@@ -164,7 +164,7 @@ html.dark .highlight pre {
 
 .highlight pre code,
 .browser-window.dark .highlight pre code {
-  @apply bg-transparent text-dark-primary !important;
+  @apply bg-transparent! text-dark-primary!;
 }
 
 html.dark .highlight pre code::selection,

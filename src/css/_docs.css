@@ -36,7 +36,7 @@ main#docs h1:not(.doc-title) {
 }
 
 #documentation-menu nav#TableOfContents ul > li > a > code {
-  @apply text-xs text-code-600 font-mono font-medium bg-code-200 border border-dashed border-code-500 border-opacity-40 bg-opacity-10 rounded p-1;
+  @apply text-xs text-orange-600 font-mono font-medium bg-orange-200/10 border border-dashed border-orange-500/40 rounded-sm p-1;
 }
 
 /* Main table of contents */
@@ -69,7 +69,7 @@ main#docs nav#TableOfContents ul li:hover:before {
   @apply opacity-100;
 }
 
-@screen lg {
+@media (width >= theme(--breakpoint-lg)) {
   #documentation-menu nav#TableOfContents {
     @apply block;
   }

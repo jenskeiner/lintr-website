@@ -20,3 +20,14 @@ permalinks:
   tags: /blog/tag/:title/
 pygmentsUseClasses: true
 title: Docs
+mediaTypes:
+  "application/json":
+    suffixes: ["json"]
+outputFormats:
+  JSON:
+    mediaType: "application/json"
+    baseName: "index"
+    isPlainText: true
+outputs:
+  home: ["HTML", "JSON"]
+  page: ["HTML", "JSON"]

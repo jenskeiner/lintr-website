@@ -1,0 +1,32 @@
+<div class="search" data-controller="search" role="dialog">
+  <label class="search-overlay" for="__search" data-search-target="overlay"></label>
+  <div class="relative float-right hidden search-expandable lg:flex" data-search-target="container" data-action="click->search#expand clickOutside->search#collapse" role="search">
+    <form class="relative w-full" name="search">
+      <input class="search-input focus:outline-none" type="text" name="query" placeholder="Search" aria-label="Search" autocapitalize="none" autocorrect="off" autocomplete="off" spellcheck="false" required="" data-search-target="query" data-action="input->search#performSearch focus->search#initializeIndex"/>
+      <input type="hidden" name="index" value="{{ printf "/%s/%s/search_index.json" .Page.Params._project .Page.Params._version }}" data-search-target="index"/>
+      <label class="search-icon" for="__search">
+      </label>
+    </form>
+    <div class="search-output" data-search-target="output">
+      <div class="search-scrollwrap" tabindex="0">
+        <div class="search-result">
+          <div class="search-result-meta" data-search-target="meta">
+            Type to start searching
+          </div>
+          <ol class="search-result-list" data-search-target="list">
+            
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+  <template data-search-target="template">
+    <article>
+      <header>
+        <h2 class="title mt--s mb--xxs"><a href="#">Title here</a></h2>
+        <div class="submitted"><time class="created-date">Date here</time></div>
+      </header>
+      <p class="content">Summary here</p>
+    </article>
+  </template>  
+</div>
