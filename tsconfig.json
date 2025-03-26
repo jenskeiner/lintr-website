@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "sourceMap": true,
+    "declaration": false,
+    "noImplicitAny": false,
+    "removeComments": true,
+    "outDir": "dist",
+    "baseUrl": ".",
+    "paths": {
+      "*": ["node_modules/*", "src/types/*"]
+    },
+    "lib": ["dom", "es2020"]
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
