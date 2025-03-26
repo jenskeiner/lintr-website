@@ -1,31 +1,26 @@
-import { defineConfig } from "eslint/config";
 import globals from "globals";
-import babelParser from "@babel/eslint-parser";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 import js from "@eslint/js";
-import { FlatCompat } from "@eslint/eslintrc";
+import babelParser from "@babel/eslint-parser";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const compat = new FlatCompat({
-    baseDirectory: __dirname,
-    recommendedConfig: js.configs.recommended,
-    allConfig: js.configs.all
-});
-
-export default defineConfig([{
-    extends: compat.extends("eslint:recommended"),
-
+export default [
+  // Global configuration
+  {
+    ignores: ["node_modules/**", "dist/**"]
+  },
+  
+  // Base JS configuration
+  js.configs.recommended,
+  
+  // Custom configuration
+  {
+    files: ["**/*.js", "**/*.mjs"],
     languageOptions: {
-        globals: {
-            ...globals.browser,
-        },
-
-        parser: babelParser,
-        ecmaVersion: 12,
-        sourceType: "module",
+      ecmaVersion: 2021,
+      sourceType: "module",
+      parser: babelParser,
+      globals: {
+        ...globals.browser
+      }
     },
-
-    rules: {},
-}]);
+  },
+];

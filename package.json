@@ -22,7 +22,7 @@
     "@hotwired/stimulus": "^3.2.2",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-commonjs": "^28.0.3",
-    "@rollup/plugin-eslint": "^8.0.1",
+    "@rollup/plugin-eslint": "^9.0.5",
     "@rollup/plugin-image": "^2.1.1",
     "@rollup/plugin-node-resolve": "^13.0.0",
     "@rollup/plugin-replace": "^4.0.0",
@@ -39,11 +39,17 @@
     "rollup-plugin-postcss": "^4.0.0",
     "rollup-plugin-terser": "^7.0.2",
     "stimulus-use": "^0.52.3",
-    "tailwindcss": "^4.0.14"
+    "tailwindcss": "^4.0.14",
+    "globals": "^15.13.0"
   },
   "dependencies": {
     "lunr": "^2.3.9",
     "vercel": "^32.3.0"
+  },
+  "overrides": {
+    "@rollup/plugin-eslint": {
+      "eslint": "$eslint"
+    }
   },
   "hugo-bin": {
     "buildTags": "extended"
