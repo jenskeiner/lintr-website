@@ -2,11 +2,17 @@ import commonjs from "@rollup/plugin-commonjs"
 import nodeResolve from "@rollup/plugin-node-resolve"
 import babel from "@rollup/plugin-babel"
 import eslint from "@rollup/plugin-eslint"
-import { terser } from "rollup-plugin-terser"
+import terser from "@rollup/plugin-terser"
 import postcss from "rollup-plugin-postcss"
 import replace from "@rollup/plugin-replace"
 import image from "@rollup/plugin-image"
 import path from "path"
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+// Get the current directory
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const dev = async () => {
   return {
