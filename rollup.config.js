@@ -6,6 +6,7 @@ import terser from "@rollup/plugin-terser"
 import postcss from "rollup-plugin-postcss"
 import replace from "@rollup/plugin-replace"
 import image from "@rollup/plugin-image"
+import typescript from "@rollup/plugin-typescript"
 import path from "path"
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -15,21 +16,26 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const dev = async () => {
+  const target = { file: "assets/assets/app.js", format: "esm", sourcemap: true }
+
   return {
-    input: "src/app.js",
-    output: {
-      file: "assets/assets/app.js",
-      format: "umd",
-    },
+    input: "src/app.ts",
+    output: target,
     context: "window",
     plugins: [
       nodeResolve({
         preferBuiltins: true,
+        extensions: ['.js', '.ts'],
       }),
       commonjs(),
       replace({
         preventAssignment: true,
         "process.env.NODE_ENV": JSON.stringify("development"),
+      }),
+      typescript({
+        tsconfig: './tsconfig.json',
+        sourceMap: true,
+        compilerOptions: {outDir: path.dirname(target.file)},
       }),
       postcss({
         config: {
@@ -44,6 +50,7 @@ const dev = async () => {
         exclude: "node_modules/**",
         configFile: path.resolve(__dirname, "babel.config.json"),
         babelHelpers: "bundled",
+        extensions: ['.js', '.ts'],
       }),
       image({
         dom: true,
@@ -53,21 +60,26 @@ const dev = async () => {
 }
 
 const prod = async () => {
+  const target = { file: "assets/assets/app.js", format: "esm", sourcemap: false }
+
   return {
-    input: "src/app.js",
-    output: {
-      file: "assets/assets/app.js",
-      format: "esm",
-    },
+    input: "src/app.ts",
+    output: target,
     context: "window",
     plugins: [
       nodeResolve({
         preferBuiltins: true,
+        extensions: ['.js', '.ts'],
       }),
       commonjs(),
       replace({
         preventAssignment: true,
         "process.env.NODE_ENV": JSON.stringify("production"),
+      }),
+      typescript({
+        tsconfig: './tsconfig.json',
+        sourceMap: false,
+        compilerOptions: {outDir: path.dirname(target.file)},
       }),
       postcss({
         config: {
@@ -82,6 +94,7 @@ const prod = async () => {
         exclude: "node_modules/**",
         configFile: path.resolve(__dirname, "babel.config.json"),
         babelHelpers: "bundled",
+        extensions: ['.js', '.ts'],
       }),
       terser(),
       image({

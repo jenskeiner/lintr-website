@@ -1,8 +1,9 @@
 import globals from "globals";
 import js from "@eslint/js";
 import babelParser from "@babel/eslint-parser";
+import tseslint from "typescript-eslint";
 
-export default [
+export default tseslint.config(
   // Global configuration
   {
     ignores: ["node_modules/**", "dist/**"]
@@ -11,7 +12,7 @@ export default [
   // Base JS configuration
   js.configs.recommended,
   
-  // Custom configuration
+  // Custom configuration for JavaScript
   {
     files: ["**/*.js", "**/*.mjs"],
     languageOptions: {
@@ -23,4 +24,25 @@ export default [
       }
     },
   },
-];
+
+  // TypeScript configuration
+  tseslint.configs.recommended,
+
+  {
+    files: ["**/*.ts"],
+    languageOptions: {
+      ecmaVersion: 2021,
+      sourceType: "module",
+      parser: tseslint.parser,
+      parserOptions: {
+        project: "./tsconfig.json"
+      },
+      globals: {
+        ...globals.browser
+      }
+    },
+    rules: {
+      // Add any TypeScript-specific rules here
+    }
+  },
+);
